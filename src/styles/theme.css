@@ -1,0 +1,123 @@
+/* WalletConnect Pay Design Tokens & Refined Theme CSS */
+
+:root {
+  /* Colors */
+  --color-electric-cobalt: #006cff;
+  --color-indigo-action: #4672ff;
+  --color-deep-indigo: #1b2045;
+  --color-sky-tint: #66a7ff;
+  --color-glacial-wash: #cce2ff;
+  --color-parchment: #f9f9f9;
+  --color-pure-white: #ffffff;
+  --color-mist: #e9e9e9;
+  --color-silver: #bbbbbb;
+  --color-steel: #787878;
+  --color-slate: #6c6c6c;
+  --color-obsidian: #202020;
+
+  /* Typography Design System */
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-khteka: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* 3-Tier Radius System */
+  --radius-sm: 3px;     /* Tags, Metadata Chips */
+  --radius-md: 16px;    /* Buttons, Inputs, Controls, Nav */
+  --radius-lg: 40px;    /* Cards, Hero Panels, Containers */
+
+  /* Tailwind Overrides */
+  --background: 249 249 249;
+  --foreground: 27 32 69;
+  --card: 255 255 255;
+  --card-foreground: 27 32 69;
+  --border: 233 233 233;
+  --input: 233 233 233;
+  --ring: 0 108 255;
+  --radius: 16px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f9f9f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cce2ff;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #66a7ff;
+}
+
+/* --- Signature Component Utility Classes --- */
+
+/* Content Card Surface (40px Radius, 1px Hairline Border, Auto-Height, Smooth Lift) */
+.card-wc {
+  background-color: #ffffff;
+  border: 1px solid #e9e9e9;
+  border-radius: 40px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 4px 12px 0px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.3s ease, 
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 250px;
+}
+
+.card-wc:hover {
+  border-color: #4672ff;
+  transform: translateY(-4px);
+  box-shadow: rgba(0, 108, 255, 0.08) 0px 12px 30px -5px, rgba(0, 0, 0, 0.04) 0px 4px 8px -2px;
+}
+
+/* Hero Monolith Panel (Electric Cobalt #006cff, 40px Radius) */
+.hero-wc {
+  background: linear-gradient(135deg, #006cff 0%, #0056cc 100%);
+  border-radius: 40px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: rgba(0, 108, 255, 0.2) 0px 10px 30px -5px;
+}
+
+/* Hero Radial Highlight Overlay */
+.hero-wc::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(102, 167, 255, 0.35) 0%, rgba(0, 108, 255, 0) 70%);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+/* Avatar Zoom Physics */
+.avatar-wc {
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-wc:hover .avatar-wc {
+  transform: scale(1.08);
+}
+
+/* Responsive Grid for 40px Cards (Auto-Height) */
+.bento-grid-wc {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .bento-card-wide {
+    grid-column: span 2;
+  }
+}

@@ -1,0 +1,21 @@
+@import "./styles/theme.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* All elements default to DM Sans */
+  body, p, span, button, input, select, textarea, a, label, div, h2, h3, h4, h5, h6 {
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Retain bold display font exclusively for main hero headline and .font-display */
+  h1, .font-display {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+  }
+}

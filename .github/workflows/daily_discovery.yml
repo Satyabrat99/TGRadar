@@ -1,0 +1,70 @@
+name: TGRadar Automated Engine
+
+on:
+  schedule:
+    # ─── Discovery: Every 4 hours (indexes new Telegram communities) ───────────
+    - cron: '0 */4 * * *'
+    # ─── Rotation: Every day at midnight UTC (rotates featured / trending) ─────
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  # ════════════════════════════════════════════════════════════════════
+  # JOB 1 — Discovery (runs every 4 hours)
+  # Crawls Telegram for new communities and ingests them into Supabase
+  # ════════════════════════════════════════════════════════════════════
+  discovery:
+    name: 🚀 Community Discovery (4h)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 */4 * * *'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Discovery Engine
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: node scripts/daily_discovery.js
+
+      - name: Run Avatar Recovery (fix missing profile photos)
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: node scripts/fix_avatars.js
+
+  # ════════════════════════════════════════════════════════════════════
+  # JOB 2 — Featured Rotation (runs once daily at midnight UTC)
+  # Rotates Community of the Day + Trending via Hidden Gem Algorithm
+  # ════════════════════════════════════════════════════════════════════
+  rotation:
+    name: 🔄 Daily Featured Rotation (midnight)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 0 * * *'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Featured Rotation Engine
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: node scripts/rotate_featured.js
