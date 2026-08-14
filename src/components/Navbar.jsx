@@ -24,8 +24,6 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
           <a href="#explore" className="hover:text-[#005bf8] transition-colors">Explore</a>
           <a href="#categories" className="hover:text-[#005bf8] transition-colors">Categories</a>
           <a href="#trending" className="hover:text-[#005bf8] transition-colors">Trending</a>
-          <a href="#creators" className="hover:text-[#005bf8] transition-colors">For Creators</a>
-          <a href="#blog" className="hover:text-[#005bf8] transition-colors">Blog</a>
         </nav>
 
         {/* Right Actions */}
