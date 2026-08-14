@@ -41,16 +41,13 @@ export default function Footer({ onOpenSubmit }) {
 
         {/* Navigation Links */}
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 uppercase tracking-wider text-[11px] text-[#bbbbbb]">
-          <a href="#" className="hover:text-white transition-colors">Explorer</a>
-          <a href="#" className="hover:text-white transition-colors">Directory Rules</a>
-          <a href="#" className="hover:text-white transition-colors">Mini App API</a>
           <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
         </div>
 
         {/* Social Links */}
         <div className="flex items-center gap-3">
           <a 
-            href="https://github.com" 
+            href="https://github.com/Satyabrat99/TGRadar" 
             target="_blank" 
             rel="noopener noreferrer"
             className="p-2.5 rounded-full bg-[#303030] text-[#bbbbbb] hover:text-white transition-all"
@@ -59,11 +56,11 @@ export default function Footer({ onOpenSubmit }) {
             <Github className="size-4" />
           </a>
           <a 
-            href="https://telegram.org" 
+            href="https://t.me/" 
             target="_blank" 
             rel="noopener noreferrer"
             className="p-2.5 rounded-full bg-[#303030] text-[#bbbbbb] hover:text-white transition-all"
-            aria-label="Telegram Channel"
+            aria-label="Telegram"
           >
             <Send className="size-4" />
           </a>
