@@ -20,10 +20,12 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
         </div>
 
         {/* Center Nav Links */}
-        <nav className="hidden lg:flex items-center gap-12 text-sm font-bold text-[#4f4f4f] tracking-wide">
-          <a href="#explore" className="hover:text-[#005bf8] transition-all hover:scale-105">Explore</a>
-          <a href="#categories" className="hover:text-[#005bf8] transition-all hover:scale-105">Categories</a>
-          <a href="#trending" className="hover:text-[#005bf8] transition-all hover:scale-105">Trending</a>
+        <nav className="hidden lg:flex items-center gap-7 text-xs font-semibold text-[#4f4f4f]">
+          <a href="#explore" className="hover:text-[#005bf8] transition-colors">Explore</a>
+          <a href="#categories" className="hover:text-[#005bf8] transition-colors">Categories</a>
+          <a href="#trending" className="hover:text-[#005bf8] transition-colors">Trending</a>
+          <a href="#creators" className="hover:text-[#005bf8] transition-colors">For Creators</a>
+          <a href="#blog" className="hover:text-[#005bf8] transition-colors">Blog</a>
         </nav>
 
         {/* Right Actions */}
