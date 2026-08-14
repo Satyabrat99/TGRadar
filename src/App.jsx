@@ -52,30 +52,39 @@ export default function App() {
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
   const [isBookmarksDrawerOpen, setIsBookmarksDrawerOpen] = useState(false);
 
-  // Load Bookmarks for the active logged-in user (clears when logged out)
+  // Load Bookmarks for the active logged-in user (from Clerk cloud metadata & localStorage)
   useEffect(() => {
-    if (isLoaded && isSignedIn && user?.id) {
-      try {
-        const saved = localStorage.getItem(`tgradar_bookmarks_${user.id}`);
-        setBookmarkedIds(saved ? JSON.parse(saved) : []);
-      } catch {
-        setBookmarkedIds([]);
+    if (!isLoaded) return;
+    if (isSignedIn && user?.id) {
+      const cloudBookmarks = user?.unsafeMetadata?.bookmarks;
+      if (Array.isArray(cloudBookmarks) && cloudBookmarks.length > 0) {
+        setBookmarkedIds(cloudBookmarks);
+        try {
+          localStorage.setItem(`tgradar_bookmarks_${user.id}`, JSON.stringify(cloudBookmarks));
+        } catch (_) {}
+      } else {
+        try {
+          const saved = localStorage.getItem(`tgradar_bookmarks_${user.id}`);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setBookmarkedIds(parsed);
+              user.update({
+                unsafeMetadata: {
+                  ...user.unsafeMetadata,
+                  bookmarks: parsed
+                }
+              }).catch(() => {});
+            }
+          }
+        } catch {
+          setBookmarkedIds([]);
+        }
       }
-    } else if (isLoaded && !isSignedIn) {
+    } else {
       setBookmarkedIds([]);
     }
   }, [isLoaded, isSignedIn, user?.id]);
-
-  // Sync Bookmarks to user-specific localStorage key
-  useEffect(() => {
-    if (isLoaded && isSignedIn && user?.id) {
-      try {
-        localStorage.setItem(`tgradar_bookmarks_${user.id}`, JSON.stringify(bookmarkedIds));
-      } catch (e) {
-        console.error('Failed to save bookmarks:', e);
-      }
-    }
-  }, [bookmarkedIds, isLoaded, isSignedIn, user?.id]);
 
   useEffect(() => {
     try {
@@ -84,6 +93,7 @@ export default function App() {
       console.error('Failed to save upvotes:', e);
     }
   }, [upvotedIds]);
+
 
 
   // Auth-gated Community Modal Opener
@@ -145,17 +155,41 @@ export default function App() {
   }, [communities]);
 
 
-  // Bookmarks Toggle (Auth-gated)
-  const handleToggleBookmark = (id) => {
+  // Bookmarks Toggle (Auth-gated + Direct Cloud Save to Clerk User Account)
+  const handleToggleBookmark = async (id) => {
     if (!isLoaded) return;
-    if (!isSignedIn) {
+    if (!isSignedIn || !user) {
       openSignIn();
       return;
     }
-    setBookmarkedIds(prev => 
-      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
-    );
+
+    const nextBookmarks = bookmarkedIds.includes(id)
+      ? bookmarkedIds.filter(item => item !== id)
+      : [...bookmarkedIds, id];
+
+    // 1. Optimistic UI update
+    setBookmarkedIds(nextBookmarks);
+
+    // 2. Save to localStorage cache
+    try {
+      localStorage.setItem(`tgradar_bookmarks_${user.id}`, JSON.stringify(nextBookmarks));
+    } catch (e) {
+      console.error('LocalStorage save error:', e);
+    }
+
+    // 3. Persist directly to Clerk User Cloud Account
+    try {
+      await user.update({
+        unsafeMetadata: {
+          ...user.unsafeMetadata,
+          bookmarks: nextBookmarks
+        }
+      });
+    } catch (err) {
+      console.warn('Clerk user metadata cloud sync:', err);
+    }
   };
+
 
 
   // Upvote Handler
