@@ -1,5 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, Trash2, ExternalLink, Bookmark } from 'lucide-react';
+
+function BookmarkItem({ item, onOpenPreview, onToggleBookmark, onClose }) {
+  const [imgError, setImgError] = useState(!item.avatar || item.avatar.trim() === '');
+  
+  const initials = item.title
+    ? item.title.split(' ').map(n => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()
+    : 'TG';
+
+  return (
+    <div 
+      onClick={() => { onOpenPreview(item); onClose(); }}
+      className="bg-white border border-[#e9e9e9] rounded-[20px] p-3.5 flex items-center justify-between gap-3 shadow-sm hover:border-[#005bf8] hover:shadow-md transition-all cursor-pointer group"
+    >
+      {/* Info block */}
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="size-10 rounded-xl overflow-hidden border border-[#e9e9e9] flex-shrink-0 bg-[#f0f4ff] flex items-center justify-center">
+          {!imgError && item.avatar ? (
+            <img 
+              src={item.avatar} 
+              alt={item.title} 
+              onError={() => setImgError(true)}
+              className="size-full object-cover"
+            />
+          ) : (
+            <div className="size-full bg-gradient-to-br from-[#005bf8] to-[#1b2045] text-white flex items-center justify-center font-black text-xs">
+              {initials}
+            </div>
+          )}
+        </div>
+        
+        <div className="flex flex-col min-w-0">
+          <span className="text-xs font-extrabold text-[#1b2045] tracking-tight truncate leading-tight group-hover:text-[#005bf8] transition-colors">
+            {item.title}
+          </span>
+          <span className="text-[10px] font-semibold text-[#787878] mt-0.5">
+            @{item.username}
+          </span>
+        </div>
+      </div>
+
+      {/* Quick actions */}
+      <div className="flex items-center gap-1.5 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+        <a
+          href={item.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-xl bg-[#f0f4ff] border border-[#dbe6fe] hover:bg-[#005bf8] hover:text-white text-[#005bf8] transition-all"
+          title="Join Channel"
+        >
+          <ExternalLink className="size-3.5" />
+        </a>
+
+        <button
+          onClick={() => onToggleBookmark(item.id)}
+          className="p-2 rounded-xl bg-gray-50 border border-[#e9e9e9] hover:border-red-300 text-[#787878] hover:text-red-600 transition-all cursor-pointer"
+          title="Remove Bookmark"
+        >
+          <Trash2 className="size-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function BookmarksDrawer({ 
   isOpen, 
@@ -51,53 +114,13 @@ export default function BookmarksDrawer({
             </div>
           ) : (
             bookmarkedCommunities.map((item) => (
-              <div 
+              <BookmarkItem 
                 key={item.id}
-                onClick={() => { onOpenPreview(item); onClose(); }}
-                className="bg-white border border-[#e9e9e9] rounded-[20px] p-3.5 flex items-center justify-between gap-3 shadow-sm hover:border-[#005bf8] hover:shadow-md transition-all cursor-pointer group"
-              >
-                {/* Info block */}
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="size-10 rounded-xl overflow-hidden border border-[#e9e9e9] flex-shrink-0 bg-gray-50">
-                    <img 
-                      src={item.avatar} 
-                      alt={item.title} 
-                      className="size-full object-cover"
-                    />
-                  </div>
-                  
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-extrabold text-[#1b2045] tracking-tight truncate leading-tight group-hover:text-[#005bf8] transition-colors">
-                      {item.title}
-                    </span>
-                    <span className="text-[10px] font-semibold text-[#787878] mt-0.5">
-                      @{item.username}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Quick actions */}
-                <div className="flex items-center gap-1.5 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                  <a
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-xl bg-[#f0f4ff] border border-[#dbe6fe] hover:bg-[#005bf8] hover:text-white text-[#005bf8] transition-all"
-                    title="Join Channel"
-                  >
-                    <ExternalLink className="size-3.5" />
-                  </a>
-
-                  <button
-                    onClick={() => onToggleBookmark(item.id)}
-                    className="p-2 rounded-xl bg-gray-50 border border-[#e9e9e9] hover:border-red-300 text-[#787878] hover:text-red-600 transition-all cursor-pointer"
-                    title="Remove Bookmark"
-                  >
-                    <Trash2 className="size-3.5" />
-                  </button>
-                </div>
-
-              </div>
+                item={item}
+                onOpenPreview={onOpenPreview}
+                onToggleBookmark={onToggleBookmark}
+                onClose={onClose}
+              />
             ))
           )}
         </div>
@@ -117,3 +140,4 @@ export default function BookmarksDrawer({
     </div>
   );
 }
+
