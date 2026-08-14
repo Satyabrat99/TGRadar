@@ -5,12 +5,8 @@ import './index.css'
 import App from './App.jsx'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_Z2FtZS1veXN0ZXItMzkuY2xlcmsuYWNjb3VudHMuZGV2JA';
-
-if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Clerk Publishable Key")
-}
-
 const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
