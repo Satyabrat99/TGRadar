@@ -203,10 +203,10 @@ export default function Hero({
         </svg>
 
         {/* Dynamic Foreground Content with Generous Navbar Spacing */}
-        <div className="relative z-10 flex flex-col items-center pt-8 sm:pt-14">
+        <div className="relative z-10 flex flex-col items-center text-center pt-8 sm:pt-14">
           
           {/* Live Badge */}
-          <div className="hero-badge inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider text-white mb-6 sm:mb-8 border border-white/25 shadow-md hover:bg-white/25 hover:scale-105 transition-all cursor-default">
+          <div className="hero-badge inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider text-white mb-6 sm:mb-8 border border-white/25 shadow-md hover:bg-white/25 hover:scale-105 transition-all cursor-default mx-auto">
             <span className="relative flex size-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full size-2 bg-emerald-400"></span>
@@ -217,13 +217,13 @@ export default function Hero({
           </div>
 
           {/* Headline */}
-          <h1 className="hero-h1 text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight max-w-4xl mb-4 !text-white drop-shadow-sm px-4">
+          <h1 className="hero-h1 text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight max-w-4xl mb-4 !text-white drop-shadow-sm px-4 text-center mx-auto">
             The Verified Multiverse of <br />
             Telegram Communities
           </h1>
 
           {/* Subtext */}
-          <p className="hero-sub !text-white/90 text-sm md:text-base max-w-2xl mx-auto font-normal leading-relaxed mb-8 px-4">
+          <p className="hero-sub !text-white/90 text-sm md:text-base max-w-2xl mx-auto font-normal leading-relaxed mb-8 px-4 text-center">
             Discover top-tier channels, automation bots, interactive supergroups, and Web3 mini apps curated across {totalDomainsCount} major domains.
           </p>
 
