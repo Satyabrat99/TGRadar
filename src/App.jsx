@@ -18,20 +18,13 @@ import { COMMUNITIES } from './data/communities';
 import { fetchCommunities, insertCommunityToSupabase } from './lib/supabase';
 
 export default function App() {
-  const { isSignedIn, isLoaded } = useUser();
+  const { isSignedIn, isLoaded, user } = useUser();
   const { openSignIn } = useClerk();
 
   const [communities, setCommunities] = useState(COMMUNITIES);
   
-  // Persistent Bookmarks via localStorage
-  const [bookmarkedIds, setBookmarkedIds] = useState(() => {
-    try {
-      const saved = localStorage.getItem('tgradar_bookmarks');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  // User-scoped Bookmarks State
+  const [bookmarkedIds, setBookmarkedIds] = useState([]);
 
   // Persistent Upvotes via localStorage
   const [upvotedIds, setUpvotedIds] = useState(() => {
@@ -59,14 +52,30 @@ export default function App() {
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
   const [isBookmarksDrawerOpen, setIsBookmarksDrawerOpen] = useState(false);
 
-  // Sync Bookmarks & Upvotes to localStorage
+  // Load Bookmarks for the active logged-in user (clears when logged out)
   useEffect(() => {
-    try {
-      localStorage.setItem('tgradar_bookmarks', JSON.stringify(bookmarkedIds));
-    } catch (e) {
-      console.error('Failed to save bookmarks:', e);
+    if (isLoaded && isSignedIn && user?.id) {
+      try {
+        const saved = localStorage.getItem(`tgradar_bookmarks_${user.id}`);
+        setBookmarkedIds(saved ? JSON.parse(saved) : []);
+      } catch {
+        setBookmarkedIds([]);
+      }
+    } else if (isLoaded && !isSignedIn) {
+      setBookmarkedIds([]);
     }
-  }, [bookmarkedIds]);
+  }, [isLoaded, isSignedIn, user?.id]);
+
+  // Sync Bookmarks to user-specific localStorage key
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user?.id) {
+      try {
+        localStorage.setItem(`tgradar_bookmarks_${user.id}`, JSON.stringify(bookmarkedIds));
+      } catch (e) {
+        console.error('Failed to save bookmarks:', e);
+      }
+    }
+  }, [bookmarkedIds, isLoaded, isSignedIn, user?.id]);
 
   useEffect(() => {
     try {
@@ -75,6 +84,7 @@ export default function App() {
       console.error('Failed to save upvotes:', e);
     }
   }, [upvotedIds]);
+
 
   // Auth-gated Community Modal Opener
   const handleOpenPreview = (community) => {
@@ -135,12 +145,18 @@ export default function App() {
   }, [communities]);
 
 
-  // Bookmarks Toggle
+  // Bookmarks Toggle (Auth-gated)
   const handleToggleBookmark = (id) => {
+    if (!isLoaded) return;
+    if (!isSignedIn) {
+      openSignIn();
+      return;
+    }
     setBookmarkedIds(prev => 
       prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
   };
+
 
   // Upvote Handler
   const handleUpvote = (id) => {
