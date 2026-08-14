@@ -26,7 +26,7 @@ export default function FilterBar({
   ];
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto px-2 sm:px-4 py-2 sm:py-4">
+    <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-2 sm:py-4">
       <div className="relative overflow-hidden bg-white/95 backdrop-blur-xl rounded-[28px] p-4 sm:p-5 border border-[#e9eef8] shadow-[0_10px_35px_rgba(0,91,248,0.05)] flex flex-col gap-3.5 transition-all">
         
         {/* Subtle Decorative Background Gradient Glow */}
