@@ -444,7 +444,7 @@ export default function App() {
       <Newsletter />
 
       {/* Footer */}
-      <Footer />
+      <Footer onOpenSubmit={handleOpenSubmit} />
 
       {/* Detail Preview Modal */}
       <CommunityModal 
