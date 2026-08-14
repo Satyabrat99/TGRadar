@@ -39,11 +39,12 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
             >
               <Bookmark className="size-3.5 sm:size-4" />
             </button>
-            {bookmarksCount > 0 && (
+            {isSignedIn && bookmarksCount > 0 && (
               <span className="absolute -top-1 -right-1 size-4 sm:size-5 bg-[#005bf8] text-white font-extrabold text-[9px] sm:text-[10px] rounded-full flex items-center justify-center border-2 border-white shadow-md z-10 pointer-events-none">
                 {bookmarksCount}
               </span>
             )}
+
           </div>
 
           {/* Submit Community CTA Button */}

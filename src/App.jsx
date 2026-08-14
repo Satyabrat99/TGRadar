@@ -116,6 +116,17 @@ export default function App() {
     setIsSubmitModalOpen(true);
   };
 
+  // Auth-gated Bookmarks Drawer Opener
+  const handleOpenBookmarks = () => {
+    if (!isLoaded) return;
+    if (!isSignedIn) {
+      openSignIn();
+      return;
+    }
+    setIsBookmarksDrawerOpen(true);
+  };
+
+
 
 
 
@@ -307,8 +318,8 @@ export default function App() {
         onSearchChange={setSearchQuery}
         totalCount={communities.length}
         communities={communities}
-        bookmarksCount={bookmarkedIds.length}
-        onOpenBookmarks={() => setIsBookmarksDrawerOpen(true)}
+        bookmarksCount={isSignedIn ? bookmarkedIds.length : 0}
+        onOpenBookmarks={handleOpenBookmarks}
         onOpenSubmit={handleOpenSubmit}
         onOpenPreview={handleOpenPreview}
       />
