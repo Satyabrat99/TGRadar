@@ -18,12 +18,31 @@ import { COMMUNITIES } from './data/communities';
 import { fetchCommunities, insertCommunityToSupabase } from './lib/supabase';
 
 export default function App() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   const { openSignIn } = useClerk();
 
   const [communities, setCommunities] = useState(COMMUNITIES);
-  const [bookmarkedIds, setBookmarkedIds] = useState([]);
-  const [upvotedIds, setUpvotedIds] = useState([]);
+  
+  // Persistent Bookmarks via localStorage
+  const [bookmarkedIds, setBookmarkedIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem('tgradar_bookmarks');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Persistent Upvotes via localStorage
+  const [upvotedIds, setUpvotedIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem('tgradar_upvotes');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
   const [loadingDb, setLoadingDb] = useState(true);
   
   // Filter States
@@ -40,8 +59,26 @@ export default function App() {
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
   const [isBookmarksDrawerOpen, setIsBookmarksDrawerOpen] = useState(false);
 
+  // Sync Bookmarks & Upvotes to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('tgradar_bookmarks', JSON.stringify(bookmarkedIds));
+    } catch (e) {
+      console.error('Failed to save bookmarks:', e);
+    }
+  }, [bookmarkedIds]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('tgradar_upvotes', JSON.stringify(upvotedIds));
+    } catch (e) {
+      console.error('Failed to save upvotes:', e);
+    }
+  }, [upvotedIds]);
+
   // Auth-gated Community Modal Opener
   const handleOpenPreview = (community) => {
+    if (!isLoaded) return;
     if (!isSignedIn) {
       openSignIn();
       return;
@@ -51,12 +88,18 @@ export default function App() {
 
   // Auth-gated Submit Community Modal Opener
   const handleOpenSubmit = () => {
+    if (!isLoaded) return;
     if (!isSignedIn) {
       openSignIn();
       return;
     }
     setIsSubmitModalOpen(true);
   };
+
+
+
+
+
 
 
   // Load Communities from Supabase on Mount
@@ -166,10 +209,44 @@ export default function App() {
     });
   }, [communities, searchQuery, selectedCategory, selectedType, selectedTag, showNsfwOnly]);
 
-  // Sliced for Discover Grid (Top 20 Only)
+  // 50% New Discovered / 50% Old Established Discovery Grid Rotation (20 Items Total)
   const displayedCommunities = useMemo(() => {
-    return filteredCommunities.slice(0, 20);
-  }, [filteredCommunities]);
+    if (!filteredCommunities || filteredCommunities.length === 0) return [];
+
+    // If explicit search, sub-category, or tag filter is active, return matching direct results
+    if (searchQuery.trim() || selectedSubCategory || selectedTag || selectedType || showNsfwOnly) {
+      return filteredCommunities.slice(0, 20);
+    }
+
+    // Split into Newly Discovered (dynamically ingested) & Established pools
+    const newPool = filteredCommunities.filter(c => c.id?.startsWith('discovered-') || c.id?.includes('c-') || c.created_at);
+    const oldPool = filteredCommunities.filter(c => !newPool.includes(c));
+
+    const topNew = newPool.slice(0, 10);
+    const topOld = oldPool.slice(0, 10);
+
+    // Interleave 50% New and 50% Old (New 1, Old 1, New 2, Old 2...)
+    const hybrid = [];
+    const maxLen = Math.max(topNew.length, topOld.length);
+
+    for (let i = 0; i < maxLen; i++) {
+      if (topNew[i]) hybrid.push(topNew[i]);
+      if (topOld[i]) hybrid.push(topOld[i]);
+    }
+
+    // Fill remaining up to 20 if either pool has < 10
+    if (hybrid.length < 20) {
+      for (const item of filteredCommunities) {
+        if (!hybrid.some(h => h.id === item.id)) {
+          hybrid.push(item);
+        }
+        if (hybrid.length >= 20) break;
+      }
+    }
+
+    return hybrid.slice(0, 20);
+  }, [filteredCommunities, searchQuery, selectedSubCategory, selectedTag, selectedType, showNsfwOnly]);
+
 
   return (
     <div className="min-h-screen bg-[#f9f9f9] text-[#1b2045] flex flex-col font-sans antialiased selection:bg-[#005bf8] selection:text-white">

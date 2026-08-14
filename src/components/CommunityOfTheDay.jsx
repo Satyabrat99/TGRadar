@@ -6,17 +6,23 @@ import goldVerifyIcon from '../assets/gold-verify.png';
 
 // Reusable avatar with blue initials fallback
 function AvatarImg({ src, title, className }) {
-  const [failed, setFailed] = useState(!src || src === 'null' || src.trim() === '');
-  const initials = title
-    ? title.split(' ').map(n => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()
+  const [failed, setFailed] = React.useState(!src || src === 'null' || !src || !src.trim());
+
+  React.useEffect(() => {
+    setFailed(!src || src === 'null' || !src || !src.trim());
+  }, [src]);
+
+  const cleanTitle = title ? title.replace(/[^a-zA-Z0-9 ]/g, '').trim() : '';
+  const initials = cleanTitle
+    ? cleanTitle.split(/\s+/).map(n => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()
     : 'TG';
 
-  if (failed) {
+  if (failed || !src || src === 'null' || !src || !src.trim()) {
     return (
       <div
-        className={`${className} flex items-center justify-center bg-[#005bf8] text-white font-black text-sm tracking-wider`}
+        className={`${className} flex items-center justify-center bg-[#005bf8] text-white font-black text-lg tracking-wider flex-shrink-0 select-none`}
       >
-        {initials}
+        {initials || 'TG'}
       </div>
     );
   }
@@ -24,12 +30,13 @@ function AvatarImg({ src, title, className }) {
   return (
     <img
       src={src}
-      alt={title}
+      alt={title || 'Avatar'}
       className={`${className} object-cover`}
       onError={() => setFailed(true)}
     />
   );
 }
+
 
 export default function CommunityOfTheDay({ 
   communityOfDay, 
@@ -84,8 +91,9 @@ export default function CommunityOfTheDay({
             <div className="flex flex-col sm:flex-row items-start gap-4 mb-4">
               {/* Profile Avatar DP */}
               <div className="size-20 rounded-[20px] overflow-hidden border-2 border-white shadow-md flex-shrink-0">
-                <AvatarImg src={featured.avatar} title={featured.title} className="size-full" />
+                <AvatarImg key={featured.avatar || featured.username || featured.id} src={featured.avatar} title={featured.title} className="size-full" />
               </div>
+
 
               {/* Title, Badges & Bio */}
               <div className="flex flex-col text-left">

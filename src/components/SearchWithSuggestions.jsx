@@ -167,8 +167,8 @@ export default function SearchWithSuggestions({ searchVal, onSearchChange, commu
     <div ref={containerRef} className="relative w-full">
       {/* Search Input Pill */}
       <div className={`bg-white rounded-full p-2 flex items-center gap-3 shadow-2xl border transition-all duration-200 ${focused ? 'border-[#005bf8]/50 shadow-[0_0_0_3px_rgba(0,91,248,0.15)]' : 'border-white/30'}`}>
-        <div className="pl-4 text-[#787878]">
-          <Search className="size-5" />
+        <div className="pl-3 sm:pl-4 text-[#787878] flex-shrink-0">
+          <Search className="size-4 sm:size-5" />
         </div>
         <input
           ref={inputRef}
@@ -177,8 +177,8 @@ export default function SearchWithSuggestions({ searchVal, onSearchChange, commu
           onChange={(e) => { onSearchChange(e.target.value); setOpen(true); }}
           onFocus={() => { setFocused(true); setOpen(true); }}
           onBlur={() => setFocused(false)}
-          placeholder="Search channels, groups, bots, or topics..."
-          className="flex-1 bg-transparent text-[#1b2045] placeholder-[#888888] text-sm focus:outline-none py-2 font-medium"
+          placeholder="Search channels, groups, bots..."
+          className="flex-1 bg-transparent text-[#1b2045] placeholder-[#888888] text-xs sm:text-sm focus:outline-none py-2 font-medium min-w-0"
           autoComplete="off"
         />
         {searchVal && (
@@ -188,10 +188,12 @@ export default function SearchWithSuggestions({ searchVal, onSearchChange, commu
         )}
         <button
           onClick={() => { setOpen(false); inputRef.current?.blur(); }}
-          className="bg-[#005bf8] hover:bg-[#0047c9] text-white font-bold text-xs px-7 py-3 rounded-full transition-all shadow-md active:scale-95 whitespace-nowrap flex-shrink-0"
+          className="bg-[#005bf8] hover:bg-[#0047c9] text-white font-bold text-xs px-3 sm:px-6 py-2 sm:py-3 rounded-full transition-all shadow-md active:scale-95 whitespace-nowrap flex-shrink-0 cursor-pointer"
         >
           Search
         </button>
+
+
       </div>
 
       {/* Portal dropdown — renders outside all overflow:hidden parents */}

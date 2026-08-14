@@ -19,3 +19,50 @@
     letter-spacing: -0.025em;
   }
 }
+
+/* ── Clerk Auth Modal Custom Brand Styling ─────────────────── */
+.cl-modalBackdrop {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.cl-cardBox {
+  width: 100% !important;
+  max-width: 440px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid #e9e9e9 !important;
+  border-radius: 28px !important;
+  overflow: hidden !important;
+  background-color: #ffffff !important;
+  margin: 1rem !important;
+}
+
+.cl-card {
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 2rem !important;
+}
+
+.cl-header {
+  position: relative !important;
+  padding-right: 2rem !important;
+}
+
+.cl-headerTitle {
+  color: #1b2045 !important;
+  font-weight: 900 !important;
+  font-size: 1.5rem !important;
+  letter-spacing: -0.025em !important;
+}
+
+.cl-modalCloseButton {
+  top: 1.25rem !important;
+  right: 1.25rem !important;
+}
+
+.cl-footer {
+  background-color: #fafafa !important;
+  border-top: 1px solid #f0f0f0 !important;
+  padding: 1.25rem 2rem !important;
+}
