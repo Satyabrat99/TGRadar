@@ -163,27 +163,28 @@ export default function Hero({
         </svg>
 
         {/* Glowing blobs — breathe in/out */}
-        <div className="deco-glow absolute top-1/3 left-1/4 size-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="deco-glow absolute bottom-5 right-10 size-80 bg-blue-300/15 rounded-full blur-3xl pointer-events-none"
-             style={{ animationDelay: '2s' }} />
+        {/* Animated Background Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#005bf8] via-[#0052e0] to-[#003db3] opacity-90"></div>
 
-        {/* Floating Navbar */}
-        <Navbar 
-          bookmarksCount={bookmarksCount} 
-          onOpenBookmarks={onOpenBookmarks} 
-          onOpenSubmit={onOpenSubmit} 
-        />
+        {/* Decorative Grid Lines */}
+        <div 
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: '24px 24px'
+          }}
+        ></div>
 
-        {/* Main Hero Content */}
-        <div className="max-w-[1200px] mx-auto px-4 pt-8 text-center flex flex-col items-center relative z-10">
-
+        {/* Dynamic Foreground Content */}
+        <div className="relative z-10 flex flex-col items-center">
+          
           {/* Live Badge */}
           <div className="hero-badge inline-flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-wider text-white mb-6 border border-white/25 shadow-md hover:bg-white/25 hover:scale-105 transition-all cursor-default">
             <span className="relative flex size-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full size-2 bg-emerald-400"></span>
             </span>
-            <strong className="text-emerald-300">{totalCount}+ Communities Indexed</strong>
+            <strong className="text-emerald-300">{totalCount || communities.length}+ Communities Indexed</strong>
             <span className="opacity-40">·</span>
             <span className="text-[10px] font-semibold text-white/80">Live Sync</span>
           </div>
@@ -196,7 +197,7 @@ export default function Hero({
 
           {/* Subtext */}
           <p className="hero-sub !text-white/90 text-sm md:text-base max-w-2xl mx-auto font-normal leading-relaxed mb-8">
-            Discover top-tier channels, automation bots, interactive supergroups, and Web3 mini apps curated across 10 major domains.
+            Discover top-tier channels, automation bots, interactive supergroups, and Web3 mini apps curated across {totalDomainsCount} major domains.
           </p>
 
           {/* Search */}
@@ -212,9 +213,9 @@ export default function Hero({
           {/* Stat Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl">
             {[
-              { icon: <UserCheck className="size-5" />, value: '52.8M+',    label: 'Reachable Members', cls: 'hero-stat-0' },
-              { icon: <LayoutGrid className="size-5"/>, value: '10 Domains', label: 'Curated Hubs',       cls: 'hero-stat-1' },
-              { icon: <ShieldCheck className="size-5"/>,value: '98% Average',label: 'Safety Rating',      cls: 'hero-stat-2' },
+              { icon: <UserCheck className="size-5" />, value: totalReachableMembers, label: 'Reachable Members', cls: 'hero-stat-0' },
+              { icon: <LayoutGrid className="size-5"/>, value: `${totalDomainsCount} Domains`, label: 'Curated Hubs',       cls: 'hero-stat-1' },
+              { icon: <ShieldCheck className="size-5"/>,value: averageSafety, label: 'Safety Rating',      cls: 'hero-stat-2' },
             ].map(({ icon, value, label, cls }) => (
               <div
                 key={label}
