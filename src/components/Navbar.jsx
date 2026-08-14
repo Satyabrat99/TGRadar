@@ -6,7 +6,7 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
   const { isSignedIn, isLoaded } = useUser();
 
   return (
-    <header className="w-full max-w-[1200px] mx-auto px-2 sm:px-4 pt-4 sm:pt-6 pb-2 relative z-30">
+    <header className="w-full max-w-[1175px] mx-auto px-2 sm:px-4 pt-4 sm:pt-6 pb-2 relative z-30">
       <div className="bg-white/95 backdrop-blur-md rounded-full px-3.5 sm:px-6 py-2 sm:py-3 flex items-center justify-between shadow-lg border border-white/20">
         
         {/* Brand Logo */}
