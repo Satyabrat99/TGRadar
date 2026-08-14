@@ -8,8 +8,13 @@ import { createClient } from '@supabase/supabase-js';
 import { CATEGORY_HIERARCHY } from '../src/data/categoryHierarchy.js';
 import { getRotatedGradient } from '../src/utils/telegramAvatar.js';
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://ihtjvkpgvgpvmimgypoq.supabase.co';
-const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlodGp2a3Bndmdwdm1pbWd5cG9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MzQ1OTUsImV4cCI6MjEwMjIxMDU5NX0.Ebw5EBwOxEss2dz9lkJjw4KVVTnQj0DHP7mLpO1sZww';
+const SUPABASE_URL = (process.env.SUPABASE_URL && process.env.SUPABASE_URL.trim()) 
+  || (process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_URL.trim()) 
+  || 'https://ihtjvkpgvgpvmimgypoq.supabase.co';
+
+const SUPABASE_KEY = (process.env.SUPABASE_ANON_KEY && process.env.SUPABASE_ANON_KEY.trim()) 
+  || (process.env.VITE_SUPABASE_ANON_KEY && process.env.VITE_SUPABASE_ANON_KEY.trim()) 
+  || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlodGp2a3Bndmdwdm1pbWd5cG9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY2MzQ1OTUsImV4cCI6MjEwMjIxMDU5NX0.Ebw5EBwOxEss2dz9lkJjw4KVVTnQj0DHP7mLpO1sZww';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
