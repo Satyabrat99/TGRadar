@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Award, TrendingUp, Users, Star, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { Award, TrendingUp, Users, Star, ArrowRight, ShieldCheck, Zap, Crown, Medal, Trophy } from 'lucide-react';
 import Badge from './ui/Badge';
 import VerifiedBadge from './ui/VerifiedBadge';
 import goldVerifyIcon from '../assets/gold-verify.png';
@@ -171,23 +171,45 @@ export default function CommunityOfTheDay({
           {/* 3 Ranked Floating Cards */}
           <div className="flex flex-col gap-3 flex-1 justify-center">
             {trendingList.map((item, idx) => {
-              const rankGradients = [
-                "bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-md",
-                "bg-gradient-to-br from-slate-400 to-slate-600 text-white shadow-sm",
-                "bg-gradient-to-br from-amber-700 to-amber-900 text-white shadow-sm"
+              const rankConfigs = [
+                {
+                  badgeClass: "bg-gradient-to-br from-[#fef08a] via-[#f59e0b] to-[#d97706] text-[#451a03] border-2 border-[#fffbeb] shadow-[0_4px_14px_rgba(245,158,11,0.35)] ring-2 ring-[#fef3c7]/60",
+                  icon: Crown,
+                  iconColor: "text-[#78350f]",
+                  accentBg: "bg-amber-500/10"
+                },
+                {
+                  badgeClass: "bg-gradient-to-br from-[#ffffff] via-[#cbd5e1] to-[#94a3b8] text-[#0f172a] border-2 border-white shadow-[0_4px_12px_rgba(100,116,139,0.3)] ring-2 ring-[#f1f5f9]/80",
+                  icon: Medal,
+                  iconColor: "text-[#334155]",
+                  accentBg: "bg-slate-500/10"
+                },
+                {
+                  badgeClass: "bg-gradient-to-br from-[#ffedd5] via-[#fb923c] to-[#c2410c] text-[#431407] border-2 border-[#fff7ed] shadow-[0_4px_12px_rgba(217,119,6,0.3)] ring-2 ring-[#ffedd5]/80",
+                  icon: Trophy,
+                  iconColor: "text-[#7c2d12]",
+                  accentBg: "bg-orange-500/10"
+                }
               ];
+
+              const currentRank = rankConfigs[idx] || rankConfigs[0];
+              const RankIcon = currentRank.icon;
 
               return (
                 <div 
                   key={item.id} 
                   onClick={() => onOpenPreview(item)}
-                  className="bg-white rounded-[20px] p-3.5 border border-[#e2e8f5] flex items-center justify-between hover:border-[#005bf8] hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group"
+                  className="bg-white rounded-[22px] p-3.5 border border-[#e2e8f5] flex items-center justify-between hover:border-[#005bf8] hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group"
                 >
-                  <div className="flex items-center gap-3.5">
-                    {/* Rank Badge */}
-                    <div className={`size-8 rounded-full flex items-center justify-center font-black text-xs flex-shrink-0 ${rankGradients[idx]}`}>
-                      #{idx + 1}
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    {/* Prestigious Podium Rank Badge */}
+                    <div className={`size-9 rounded-2xl flex items-center justify-center font-black text-xs flex-shrink-0 shadow-sm transition-transform group-hover:scale-105 ${currentRank.badgeClass}`}>
+                      <div className="flex items-center gap-0.5">
+                        <RankIcon className={`size-3.5 ${currentRank.iconColor} fill-current/20`} />
+                        <span className="font-black tracking-tight">{idx + 1}</span>
+                      </div>
                     </div>
+
 
                     {/* Avatar DP */}
                     <div className="size-11 rounded-xl overflow-hidden border border-[#e9e9e9] flex-shrink-0">
