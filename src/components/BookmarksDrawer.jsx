@@ -1,49 +1,79 @@
 import React, { useState } from 'react';
-import { X, Trash2, ExternalLink, Bookmark } from 'lucide-react';
+import { X, Trash2, ExternalLink, Bookmark, Users } from 'lucide-react';
+import VerifiedBadge from './ui/VerifiedBadge';
+import Badge from './ui/Badge';
 
 function BookmarkItem({ item, onOpenPreview, onToggleBookmark, onClose }) {
-  const [imgError, setImgError] = useState(!item.avatar || item.avatar.trim() === '');
+  const cleanUsername = (item.username || '').replace('@', '').trim().toLowerCase();
   
+  const hasValidAvatar = item.avatar && 
+                         !item.avatar.includes('unavatar.io') && 
+                         item.avatar.trim() !== '';
+
+  const [imgUrl, setImgUrl] = useState(hasValidAvatar ? item.avatar : '');
+  const [useFallbackBadge, setUseFallbackBadge] = useState(!hasValidAvatar);
+
   const initials = item.title
     ? item.title.split(' ').map(n => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()
     : 'TG';
 
+  const formatMembers = (num) => {
+    if (!num) return '1K';
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+    return num;
+  };
+
   return (
     <div 
       onClick={() => { onOpenPreview(item); onClose(); }}
-      className="bg-white border border-[#e9e9e9] rounded-[20px] p-3.5 flex items-center justify-between gap-3 shadow-sm hover:border-[#005bf8] hover:shadow-md transition-all cursor-pointer group"
+      className="bg-white border border-[#e9e9e9] rounded-[22px] p-3.5 flex items-center justify-between gap-3 shadow-sm hover:border-[#005bf8] hover:shadow-md transition-all cursor-pointer group"
     >
       {/* Info block */}
       <div className="flex items-center gap-3 min-w-0">
-        <div className="size-10 rounded-xl overflow-hidden border border-[#e9e9e9] flex-shrink-0 bg-[#f0f4ff] flex items-center justify-center">
-          {!imgError && item.avatar ? (
+        {/* Avatar identical to CommunityCard */}
+        <div className="size-12 rounded-2xl overflow-hidden border-2 border-white shadow-md bg-white flex-shrink-0 relative flex items-center justify-center">
+          {!useFallbackBadge && imgUrl ? (
             <img 
-              src={item.avatar} 
+              src={imgUrl} 
               alt={item.title} 
-              onError={() => setImgError(true)}
+              onError={() => setUseFallbackBadge(true)}
               className="size-full object-cover"
             />
           ) : (
-            <div className="size-full bg-gradient-to-br from-[#005bf8] to-[#1b2045] text-white flex items-center justify-center font-black text-xs">
+            <div 
+              className="size-full flex items-center justify-center text-white font-black text-xs tracking-wider"
+              style={{ background: '#005bf8' }}
+            >
               {initials}
             </div>
           )}
         </div>
         
         <div className="flex flex-col min-w-0">
-          <span className="text-xs font-extrabold text-[#1b2045] tracking-tight truncate leading-tight group-hover:text-[#005bf8] transition-colors">
-            {item.title}
-          </span>
-          <span className="text-[10px] font-semibold text-[#787878] mt-0.5">
-            @{item.username}
-          </span>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-xs font-extrabold text-[#1b2045] tracking-tight truncate leading-tight group-hover:text-[#005bf8] transition-colors">
+              {item.title}
+            </span>
+            {item.verified && <VerifiedBadge size={13} />}
+          </div>
+          
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[10px] font-semibold text-[#787878]">
+              @{item.username}
+            </span>
+            <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-[#005bf8] bg-[#f0f4ff] px-1.5 py-0.5 rounded-md">
+              <Users className="size-2.5" />
+              {formatMembers(item.subscribers)}
+            </span>
+          </div>
         </div>
       </div>
 
       {/* Quick actions */}
       <div className="flex items-center gap-1.5 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
         <a
-          href={item.link}
+          href={item.link || `https://t.me/${cleanUsername}`}
           target="_blank"
           rel="noopener noreferrer"
           className="p-2 rounded-xl bg-[#f0f4ff] border border-[#dbe6fe] hover:bg-[#005bf8] hover:text-white text-[#005bf8] transition-all"
@@ -63,6 +93,7 @@ function BookmarkItem({ item, onOpenPreview, onToggleBookmark, onClose }) {
     </div>
   );
 }
+
 
 export default function BookmarksDrawer({ 
   isOpen, 
