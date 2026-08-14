@@ -44,6 +44,23 @@ export default function CommunityModal({
     }
   };
 
+  const hasValidAvatar = community.avatar && 
+                         !community.avatar.includes('unavatar.io') && 
+                         community.avatar.trim() !== '';
+
+  const [useFallbackBadge, setUseFallbackBadge] = React.useState(!hasValidAvatar);
+
+  React.useEffect(() => {
+    const valid = community.avatar && 
+                  !community.avatar.includes('unavatar.io') && 
+                  community.avatar.trim() !== '';
+    setUseFallbackBadge(!valid);
+  }, [community?.avatar, community?.username]);
+
+  const initials = community.title
+    ? community.title.split(' ').map(n => n[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()
+    : 'TG';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fadeIn">
       
@@ -90,13 +107,24 @@ export default function CommunityModal({
           
           {/* Avatar Overlaid Header */}
           <div className="-mt-10 flex items-end justify-between">
-            <div className="size-20 rounded-2xl overflow-hidden border-4 border-white shadow-lg bg-white flex-shrink-0">
-              <img 
-                src={community.avatar} 
-                alt={community.title} 
-                className="size-full object-cover"
-              />
+            <div className="size-20 rounded-2xl overflow-hidden border-4 border-white shadow-lg bg-white flex-shrink-0 relative flex items-center justify-center">
+              {!useFallbackBadge && community.avatar ? (
+                <img 
+                  src={community.avatar} 
+                  alt={community.title} 
+                  onError={() => setUseFallbackBadge(true)}
+                  className="size-full object-cover"
+                />
+              ) : (
+                <div 
+                  className="size-full flex items-center justify-center text-white font-black text-xl tracking-wider"
+                  style={{ background: '#005bf8' }}
+                >
+                  {initials}
+                </div>
+              )}
             </div>
+
 
             <div className="flex items-center gap-2">
               <button
