@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Search, X, TrendingUp } from 'lucide-react';
 
-export default function SearchWithSuggestions({ searchVal, onSearchChange, communities = [] }) {
+export default function SearchWithSuggestions({ searchVal, onSearchChange, communities = [], onOpenPreview }) {
   const [open, setOpen] = useState(false);
   const [focused, setFocused] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState({});
@@ -69,7 +69,11 @@ export default function SearchWithSuggestions({ searchVal, onSearchChange, commu
     onSearchChange(community.title);
     setOpen(false);
     inputRef.current?.blur();
+    if (onOpenPreview) {
+      onOpenPreview(community);
+    }
   }
+
 
   function handleClear() {
     onSearchChange('');

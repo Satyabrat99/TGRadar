@@ -11,7 +11,8 @@ export default function Hero({
   communities,
   bookmarksCount, 
   onOpenBookmarks, 
-  onOpenSubmit 
+  onOpenSubmit,
+  onOpenPreview 
 }) {
   // Mouse parallax state
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
@@ -204,6 +205,7 @@ export default function Hero({
               searchVal={searchVal}
               onSearchChange={onSearchChange}
               communities={communities}
+              onOpenPreview={onOpenPreview}
             />
           </div>
 

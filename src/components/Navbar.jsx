@@ -1,5 +1,6 @@
 import React from 'react';
 import { Radar, Bookmark, PlusCircle } from 'lucide-react';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }) {
   return (
@@ -51,9 +52,33 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
             <PlusCircle className="size-4 flex-shrink-0" />
             <span>Submit Community</span>
           </button>
+
+          {/* Clerk Auth Buttons */}
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="bg-[#1b2045] hover:bg-[#2a3060] text-white text-xs font-bold px-5 py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap flex-shrink-0 cursor-pointer">
+                Sign In
+              </button>
+            </SignInButton>
+          </SignedOut>
+
+          <SignedIn>
+            <div className="flex items-center pl-1">
+              <UserButton 
+                afterSignOutUrl="/" 
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "size-9 rounded-full shadow-md border-2 border-[#005bf8]"
+                  }
+                }}
+              />
+            </div>
+          </SignedIn>
+
         </div>
 
       </div>
     </header>
   );
 }
+

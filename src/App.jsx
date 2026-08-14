@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowRight, Layers } from 'lucide-react';
+import { useUser, useClerk } from '@clerk/clerk-react';
 import Hero from './components/Hero';
 import IndustrySpotlight from './components/IndustrySpotlight';
 import CommunityOfTheDay from './components/CommunityOfTheDay';
@@ -17,6 +18,9 @@ import { COMMUNITIES } from './data/communities';
 import { fetchCommunities, insertCommunityToSupabase } from './lib/supabase';
 
 export default function App() {
+  const { isSignedIn } = useUser();
+  const { openSignIn } = useClerk();
+
   const [communities, setCommunities] = useState(COMMUNITIES);
   const [bookmarkedIds, setBookmarkedIds] = useState([]);
   const [upvotedIds, setUpvotedIds] = useState([]);
@@ -35,6 +39,25 @@ export default function App() {
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
   const [isBookmarksDrawerOpen, setIsBookmarksDrawerOpen] = useState(false);
+
+  // Auth-gated Community Modal Opener
+  const handleOpenPreview = (community) => {
+    if (!isSignedIn) {
+      openSignIn();
+      return;
+    }
+    setPreviewCommunity(community);
+  };
+
+  // Auth-gated Submit Community Modal Opener
+  const handleOpenSubmit = () => {
+    if (!isSignedIn) {
+      openSignIn();
+      return;
+    }
+    setIsSubmitModalOpen(true);
+  };
+
 
   // Load Communities from Supabase on Mount
   useEffect(() => {
@@ -159,7 +182,8 @@ export default function App() {
         communities={communities}
         bookmarksCount={bookmarkedIds.length}
         onOpenBookmarks={() => setIsBookmarksDrawerOpen(true)}
-        onOpenSubmit={() => setIsSubmitModalOpen(true)}
+        onOpenSubmit={handleOpenSubmit}
+        onOpenPreview={handleOpenPreview}
       />
 
       {/* Industry Categories Spotlight */}
@@ -180,7 +204,7 @@ export default function App() {
         <CommunityOfTheDay 
           communityOfDay={communityOfDay}
           trendingList={trendingList}
-          onOpenPreview={setPreviewCommunity}
+          onOpenPreview={handleOpenPreview}
         />
       </section>
 
@@ -235,7 +259,7 @@ export default function App() {
                   isUpvoted={upvotedIds.includes(community.id)}
                   onToggleBookmark={handleToggleBookmark}
                   onUpvote={handleUpvote}
-                  onOpenPreview={setPreviewCommunity}
+                  onOpenPreview={handleOpenPreview}
                 />
               ))}
             </div>
@@ -311,7 +335,7 @@ export default function App() {
         upvotedIds={upvotedIds}
         onToggleBookmark={handleToggleBookmark}
         onUpvote={handleUpvote}
-        onOpenPreview={setPreviewCommunity}
+        onOpenPreview={handleOpenPreview}
         onSelectCategory={(cat) => {
           setSelectedCategory(cat);
           setSelectedSubCategory(null);
@@ -327,8 +351,9 @@ export default function App() {
         onClose={() => setIsBookmarksDrawerOpen(false)}
         bookmarkedCommunities={communities.filter(c => bookmarkedIds.includes(c.id))}
         onToggleBookmark={handleToggleBookmark}
-        onOpenPreview={setPreviewCommunity}
+        onOpenPreview={handleOpenPreview}
       />
+
 
     </div>
   );
