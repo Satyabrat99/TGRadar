@@ -110,7 +110,15 @@ export default function Hero({
         onMouseLeave={handleMouseLeave}
         className="w-full bg-gradient-to-b from-[#005bf8] via-[#0066ff] to-[#0055ee] rounded-b-[40px] text-white relative overflow-hidden pb-14 shadow-xl"
       >
+        {/* Floating Navbar */}
+        <Navbar 
+          bookmarksCount={bookmarksCount} 
+          onOpenBookmarks={onOpenBookmarks} 
+          onOpenSubmit={onOpenSubmit} 
+        />
+
         {/* ── Decorative Background Layer (parallax) ─────────────── */}
+
 
         {/* Bottom-left: concentric arc waves — drifts slowly */}
         <svg
