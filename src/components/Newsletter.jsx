@@ -42,18 +42,18 @@ export default function Newsletter() {
               <span>Thanks for subscribing to TGRadar updates!</span>
             </div>
           ) : (
-            <div className="bg-white rounded-full p-1.5 flex items-center gap-2 shadow-lg">
+            <div className="bg-white rounded-full p-1.5 flex items-center gap-1.5 shadow-lg min-w-0">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className="flex-1 bg-transparent text-[#1b2045] placeholder-[#888888] text-xs font-medium px-4 py-2 focus:outline-none"
+                className="flex-1 bg-transparent text-[#1b2045] placeholder-[#888888] text-xs font-medium px-3 sm:px-4 py-2 focus:outline-none min-w-0"
                 required
               />
               <button
                 type="submit"
-                className="bg-[#005bf8] hover:bg-[#0047c9] text-white font-bold text-xs px-6 py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap flex-shrink-0"
+                className="bg-[#005bf8] hover:bg-[#0047c9] text-white font-bold text-xs px-4 sm:px-6 py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap flex-shrink-0 cursor-pointer"
               >
                 Subscribe
               </button>

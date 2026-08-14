@@ -123,46 +123,45 @@ export default function CommunityOfTheDay({
             </div>
 
             {/* Metrics Footer & CTA Button */}
-            <div className="flex items-center justify-between border-t border-[#f0f0f0] pt-4 mt-2">
-              <div className="flex items-center gap-4 text-xs font-bold text-[#1b2045]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-[#f0f0f0] pt-4 mt-2">
+              <div className="flex items-center justify-between sm:justify-start gap-4 text-xs font-bold text-[#1b2045]">
                 <span className="flex items-center gap-1 text-[#4f4f4f]">
-                  <Users className="size-4 text-[#005bf8]" />
+                  <Users className="size-3.5 sm:size-4 text-[#005bf8]" />
                   {formatMembers(featured.subscribers)} Members
                 </span>
                 <span className="flex items-center gap-1 text-amber-500">
-                  <Star className="size-4 fill-current" />
+                  <Star className="size-3.5 sm:size-4 fill-current" />
                   {featured.rating || 5.0} Safety
                 </span>
               </div>
 
               <button
                 onClick={() => onOpenPreview(featured)}
-                className="bg-[#005bf8] hover:bg-[#0047c9] text-white text-xs font-extrabold px-5 py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap cursor-pointer"
+                className="w-full sm:w-auto bg-[#005bf8] hover:bg-[#0047c9] text-white text-xs font-extrabold px-5 py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap cursor-pointer text-center"
               >
                 View Community
               </button>
             </div>
-
           </div>
 
         </div>
 
         {/* Right Block: Trending Communities Leaderboard (6 cols) */}
-        <div className="lg:col-span-6 bg-gradient-to-br from-[#f0f5ff] via-[#f8fafc] to-[#eef4ff] border border-[#dbe6fe] rounded-[32px] p-6 flex flex-col justify-between shadow-md">
+        <div className="lg:col-span-6 bg-gradient-to-br from-[#f0f5ff] via-[#f8fafc] to-[#eef4ff] border border-[#dbe6fe] rounded-[32px] p-5 sm:p-6 flex flex-col justify-between shadow-md">
           
           {/* Header Bar */}
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-purple-600 text-white shadow-md">
-                <TrendingUp className="size-5" />
+          <div className="flex items-center justify-between mb-5 gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="p-2 rounded-xl bg-purple-600 text-white shadow-md flex-shrink-0">
+                <TrendingUp className="size-4 sm:size-5" />
               </div>
-              <div className="flex flex-col text-left">
-                <span className="text-base font-black text-[#1b2045] tracking-tight">Trending Communities</span>
-                <span className="text-[11px] font-semibold text-[#787878]">Real-time engagement leaderboard</span>
+              <div className="flex flex-col text-left min-w-0">
+                <span className="text-sm sm:text-base font-black text-[#1b2045] tracking-tight truncate">Trending Communities</span>
+                <span className="text-[10px] sm:text-[11px] font-semibold text-[#787878] truncate">Real-time engagement leaderboard</span>
               </div>
             </div>
             
-            <a href="#explore" className="text-xs font-bold text-[#005bf8] hover:underline flex items-center gap-1">
+            <a href="#explore" className="text-xs font-bold text-[#005bf8] hover:underline flex items-center gap-1 whitespace-nowrap flex-shrink-0">
               <span>View all</span>
               <ArrowRight className="size-3.5" />
             </a>
@@ -199,34 +198,33 @@ export default function CommunityOfTheDay({
                 <div 
                   key={item.id} 
                   onClick={() => onOpenPreview(item)}
-                  className="bg-white rounded-[22px] p-3.5 border border-[#e2e8f5] flex items-center justify-between hover:border-[#005bf8] hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group"
+                  className="bg-white rounded-[22px] p-3 sm:p-3.5 border border-[#e2e8f5] flex items-center justify-between hover:border-[#005bf8] hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group gap-2"
                 >
-                  <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
                     {/* Prestigious Podium Rank Badge */}
-                    <div className={`size-9 rounded-2xl flex items-center justify-center font-black text-xs flex-shrink-0 shadow-sm transition-transform group-hover:scale-105 ${currentRank.badgeClass}`}>
+                    <div className={`size-8 sm:size-9 rounded-2xl flex items-center justify-center font-black text-xs flex-shrink-0 shadow-sm transition-transform group-hover:scale-105 ${currentRank.badgeClass}`}>
                       <div className="flex items-center gap-0.5">
                         <RankIcon className={`size-3.5 ${currentRank.iconColor} fill-current/20`} />
                         <span className="font-black tracking-tight">{idx + 1}</span>
                       </div>
                     </div>
 
-
                     {/* Avatar DP */}
-                    <div className="size-11 rounded-xl overflow-hidden border border-[#e9e9e9] flex-shrink-0">
+                    <div className="size-10 sm:size-11 rounded-xl overflow-hidden border border-[#e9e9e9] flex-shrink-0">
                       <AvatarImg src={item.avatar} title={item.title} className="size-full" />
                     </div>
 
                     {/* Info */}
-                    <div className="flex flex-col text-left">
-                      <div className="flex items-center gap-1">
-                        <span className="text-sm font-extrabold text-[#1b2045] leading-tight group-hover:text-[#005bf8] transition-colors">
+                    <div className="flex flex-col text-left min-w-0 flex-1">
+                      <div className="flex items-center gap-1 min-w-0">
+                        <span className="text-xs sm:text-sm font-extrabold text-[#1b2045] leading-tight truncate group-hover:text-[#005bf8] transition-colors">
                           {item.title}
                         </span>
                         {item.verified && (
-                          <VerifiedBadge size={15} />
+                          <VerifiedBadge size={14} className="flex-shrink-0" />
                         )}
                       </div>
-                      <span className="text-[11px] font-semibold text-[#787878] mt-0.5">
+                      <span className="text-[10px] sm:text-[11px] font-semibold text-[#787878] mt-0.5">
                         {formatMembers(item.subscribers)} Members
                       </span>
                     </div>
@@ -238,7 +236,7 @@ export default function CommunityOfTheDay({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="px-4 py-1.5 rounded-full border border-[#e2e8f5] bg-[#f8fafc] hover:border-[#005bf8] hover:bg-[#005bf8] hover:text-white text-[#1b2045] text-xs font-bold transition-all shadow-sm active:scale-95"
+                    className="px-3 sm:px-4 py-1.5 rounded-full border border-[#e2e8f5] bg-[#f8fafc] hover:border-[#005bf8] hover:bg-[#005bf8] hover:text-white text-[#1b2045] text-xs font-bold transition-all shadow-sm active:scale-95 flex-shrink-0 ml-1"
                   >
                     Join
                   </a>

@@ -127,14 +127,14 @@ export default function FilterBar({
             </button>
 
             {/* Segmented Type Controller */}
-            <div className="bg-[#f0f4ff]/90 p-1 rounded-full border border-[#dbe6fe] flex items-center gap-1 shadow-inner">
+            <div className="bg-[#f0f4ff]/90 p-1 rounded-full border border-[#dbe6fe] flex items-center gap-1 shadow-inner overflow-x-auto max-w-full no-scrollbar">
               {typeTabs.map(({ id, label, icon: Icon }) => {
                 const isActive = (id === 'all' && !selectedType) || selectedType === id;
                 return (
                   <button
                     key={id}
                     onClick={() => onSelectType(id === 'all' ? null : id)}
-                    className={`px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    className={`px-2.5 sm:px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs font-extrabold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                       isActive
                         ? 'bg-[#1b2045] text-white shadow-sm scale-100'
                         : 'text-[#4f4f4f] hover:text-[#1b2045] hover:bg-white/60'
@@ -152,18 +152,18 @@ export default function FilterBar({
         </div>
 
         {/* Bottom Row: Live Data Metrics & Real-time Indicator */}
-        <div className="flex items-center justify-between text-xs font-semibold text-[#787878] pt-2.5 border-t border-[#f0f3fa] relative z-10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-semibold text-[#787878] pt-2.5 border-t border-[#f0f3fa] relative z-10">
           <div className="flex items-center gap-2 text-[#1b2045]">
-            <div className="size-5 rounded-full bg-[#f0f4ff] flex items-center justify-center text-[#005bf8]">
+            <div className="size-5 rounded-full bg-[#f0f4ff] flex items-center justify-center text-[#005bf8] flex-shrink-0">
               <Sparkles className="size-3" />
             </div>
-            <span>
+            <span className="text-[11px] sm:text-xs">
               Showing <strong className="text-[#005bf8] font-black">{totalResults}</strong> verified communities
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-[11px] font-medium text-[#787878]">
-            <span className="relative flex size-2">
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-[#787878]">
+            <span className="relative flex size-2 flex-shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full size-2 bg-emerald-500"></span>
             </span>
