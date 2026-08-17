@@ -13,9 +13,11 @@ import BookmarksDrawer from './components/BookmarksDrawer';
 import HowItWorks from './components/HowItWorks';
 import Newsletter from './components/Newsletter';
 import Footer from './components/Footer';
+import AnalyticsDashboard from './components/AnalyticsDashboard';
 
 import { COMMUNITIES } from './data/communities';
 import { fetchCommunities, insertCommunityToSupabase } from './lib/supabase';
+import { trackPageView, trackJoinClick, trackSearch, trackCategoryView } from './lib/analytics';
 
 export default function App() {
   const { isSignedIn, isLoaded, user } = useUser();
@@ -51,6 +53,24 @@ export default function App() {
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
   const [isBookmarksDrawerOpen, setIsBookmarksDrawerOpen] = useState(false);
+
+  // Hidden Analytics Dashboard State (Controlled via Footer or #/analytics URL)
+  const [showAnalytics, setShowAnalytics] = useState(() => {
+    return window.location.hash === '#/analytics' || window.location.search.includes('analytics');
+  });
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setShowAnalytics(window.location.hash === '#/analytics' || window.location.search.includes('analytics'));
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // Track initial page view telemetry
+  useEffect(() => {
+    trackPageView();
+  }, []);
 
   // Load Bookmarks for the active logged-in user (from Clerk cloud metadata & localStorage)
   useEffect(() => {
@@ -103,6 +123,7 @@ export default function App() {
       openSignIn();
       return;
     }
+    trackJoinClick(community);
     setPreviewCommunity(community);
   };
 
@@ -309,6 +330,18 @@ export default function App() {
   }, [filteredCommunities, searchQuery, selectedSubCategory, selectedTag, selectedType, showNsfwOnly]);
 
 
+  // If Hidden Analytics Dashboard is active, render dedicated telemetry view
+  if (showAnalytics) {
+    return (
+      <AnalyticsDashboard 
+        onBackToApp={() => {
+          setShowAnalytics(false);
+          window.location.hash = '';
+        }} 
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#f9f9f9] text-[#1b2045] flex flex-col font-sans antialiased selection:bg-[#005bf8] selection:text-white">
       
@@ -444,7 +477,13 @@ export default function App() {
       <Newsletter />
 
       {/* Footer */}
-      <Footer onOpenSubmit={handleOpenSubmit} />
+      <Footer 
+        onOpenSubmit={handleOpenSubmit} 
+        onOpenAnalytics={() => {
+          setShowAnalytics(true);
+          window.location.hash = '/analytics';
+        }} 
+      />
 
       {/* Detail Preview Modal */}
       <CommunityModal 

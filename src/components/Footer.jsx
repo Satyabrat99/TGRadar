@@ -1,7 +1,7 @@
 import React from 'react';
 import { Radar, Github, Send } from 'lucide-react';
 
-export default function Footer({ onOpenSubmit }) {
+export default function Footer({ onOpenSubmit, onOpenAnalytics }) {
   return (
     <footer className="w-full bg-[#202020] text-white relative z-10 pt-16 pb-20 border-t border-[#303030]">
       
@@ -17,7 +17,7 @@ export default function Footer({ onOpenSubmit }) {
           
           <button
             onClick={onOpenSubmit}
-            className="bg-white text-[#202020] hover:bg-[#cce2ff] hover:text-[#005bf8] px-6 py-3.5 rounded-full text-xs font-bold transition-all shadow-md flex items-center gap-2 active:scale-95 whitespace-nowrap"
+            className="bg-white text-[#202020] hover:bg-[#cce2ff] hover:text-[#005bf8] px-6 py-3.5 rounded-full text-xs font-bold transition-all shadow-md flex items-center gap-2 active:scale-95 whitespace-nowrap cursor-pointer"
           >
             <span>Submit Your Channel</span>
             <Send className="size-4" />
@@ -40,8 +40,15 @@ export default function Footer({ onOpenSubmit }) {
         </div>
 
         {/* Navigation Links */}
-        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 uppercase tracking-wider text-[11px] text-[#bbbbbb]">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 uppercase tracking-wider text-[11px] text-[#bbbbbb]">
           <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+          <button 
+            onClick={onOpenAnalytics}
+            className="hover:text-[#58a6ff] transition-colors cursor-pointer text-gray-400 font-medium"
+            title="Platform Telemetry & Analytics"
+          >
+            Analytics
+          </button>
         </div>
 
         {/* Social Links */}
