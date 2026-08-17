@@ -4,8 +4,26 @@ import { ClerkProvider } from '@clerk/clerk-react'
 import './index.css'
 import App from './App.jsx'
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_Z2FtZS1veXN0ZXItMzkuY2xlcmsuYWNjb3VudHMuZGV2JA';
+function getValidClerkKey() {
+  const envKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
+  if (!envKey) return 'pk_test_Z2FtZS1veXN0ZXItMzkuY2xlcmsuYWNjb3VudHMuZGV2JA';
 
+  // Safely check if the Base64 encoded domain in the key points to unconfigured CNAME DNS
+  try {
+    const base64Part = envKey.replace(/^pk_(live|test)_/, '');
+    const decodedDomain = atob(base64Part);
+    if (decodedDomain.includes('clerk.tg-radar-neon.vercel.app')) {
+      console.warn('Clerk publishable key points to an unconfigured CNAME domain. Using fallback active key.');
+      return 'pk_test_Z2FtZS1veXN0ZXItMzkuY2xlcmsuYWNjb3VudHMuZGV2JA';
+    }
+  } catch (e) {
+    // If decoding fails, continue with envKey
+  }
+
+  return envKey;
+}
+
+const PUBLISHABLE_KEY = getValidClerkKey();
 const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
 
 createRoot(document.getElementById('root')).render(
