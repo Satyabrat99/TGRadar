@@ -362,6 +362,15 @@ export default function App() {
         onOpenPreview={handleOpenPreview}
       />
 
+      {/* Featured Community of the Day & Trending Section */}
+      <section id="trending">
+        <CommunityOfTheDay 
+          communityOfDay={communityOfDay}
+          trendingList={trendingList}
+          onOpenPreview={handleOpenPreview}
+        />
+      </section>
+
       {/* Industry Categories Spotlight */}
       <section id="categories">
         <IndustrySpotlight 
@@ -372,15 +381,6 @@ export default function App() {
             setSelectedTag(null);
           }}
           onOpenCategoriesModal={() => setIsCategoriesModalOpen(true)}
-        />
-      </section>
-
-      {/* Featured Community of the Day & Trending Section */}
-      <section id="trending">
-        <CommunityOfTheDay 
-          communityOfDay={communityOfDay}
-          trendingList={trendingList}
-          onOpenPreview={handleOpenPreview}
         />
       </section>
 
