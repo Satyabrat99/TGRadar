@@ -36,7 +36,11 @@ export default function Hero({
   // Dynamically compute live metrics from communities dataset
   const totalReachableMembers = React.useMemo(() => {
     if (!communities || communities.length === 0) return '52.8M+';
-    const total = communities.reduce((acc, c) => acc + (parseInt(c.subscribers, 10) || 0), 0);
+    const total = communities.reduce((acc, c) => {
+      let sub = parseInt(c.subscribers, 10) || 0;
+      if (sub > 50000000) sub = Math.min(Math.floor(sub / 100000), 5000000);
+      return acc + sub;
+    }, 0);
     if (total >= 1000000000) return (total / 1000000000).toFixed(1) + 'B+';
     if (total >= 1000000) return (total / 1000000).toFixed(1) + 'M+';
     if (total >= 1000) return (total / 1000).toFixed(0) + 'K+';
