@@ -4,7 +4,10 @@ import { ClerkProvider } from '@clerk/clerk-react'
 import './index.css'
 import App from './App.jsx'
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_live_Y2xlcmsudGctcmFkYXItbmVvbi52ZXJjZWwuYXBwJA';
+const envKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
+const PUBLISHABLE_KEY = (envKey && envKey.startsWith('pk_live_'))
+  ? envKey
+  : 'pk_live_Y2xlcmsudGctcmFkYXItbmVvbi52ZXJjZWwuYXBwJA';
 const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
 
 
