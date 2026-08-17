@@ -4,12 +4,15 @@ import { ClerkProvider } from '@clerk/clerk-react'
 import './index.css'
 import App from './App.jsx'
 
-const envKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
-const PUBLISHABLE_KEY = (envKey && envKey.startsWith('pk_live_'))
-  ? envKey
-  : 'pk_live_Y2xlcmsudGctcmFkYXItbmVvbi52ZXJjZWwuYXBwJA';
-const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
+const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
+const envKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
+
+const PUBLISHABLE_KEY = isLocalhost
+  ? (envKey && envKey.startsWith('pk_test_') ? envKey : 'pk_test_Z2FtZS1veXN0ZXItMzkuY2xlcmsuYWNjb3VudHMuZGV2JA')
+  : (envKey && envKey.startsWith('pk_live_') ? envKey : 'pk_live_Y2xlcmsudGctcmFkYXItbmVvbi52ZXJjZWwuYXBwJA');
+
+const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -18,12 +21,6 @@ createRoot(document.getElementById('root')).render(
       signInFallbackRedirectUrl={currentOrigin}
       signUpFallbackRedirectUrl={currentOrigin}
       afterSignOutUrl="/"
-
-
-
-
-
-
       appearance={{
         variables: {
           colorPrimary: '#005bf8',
@@ -41,14 +38,12 @@ createRoot(document.getElementById('root')).render(
           headerTitle: 'text-2xl font-black text-[#1b2045] tracking-tight',
           headerSubtitle: 'text-xs text-[#787878] mt-1',
           modalCloseButton: 'top-5 right-5 text-[#787878] hover:text-[#1b2045] transition-colors p-1.5 rounded-full hover:bg-[#f0f4ff]',
-          formButtonPrimary: 'bg-[#005bf8] hover:bg-[#0047c9] text-white font-extrabold text-xs py-3.5 rounded-full shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer w-full mt-2',
-          socialButtonsBlockButton: 'border border-[#e9e9e9] hover:bg-[#f0f4ff] hover:border-[#005bf8]/30 transition-all rounded-full font-bold text-xs py-2.5 text-[#1b2045]',
-          formFieldInput: 'rounded-xl border-[#e9e9e9] focus:border-[#005bf8] focus:ring-2 focus:ring-[#005bf8]/20 transition-all text-xs font-medium py-3 px-4',
-          footerActionLink: 'text-[#005bf8] font-bold hover:underline ml-1',
-          footer: 'bg-[#fafafa] border-t border-[#f0f0f0] rounded-b-[28px] py-4 px-8 text-center',
-          footerPagesLink: 'text-[#005bf8]',
-          dividerLine: 'bg-[#e9e9e9]',
-          dividerText: 'text-[10px] text-[#aaa] font-bold uppercase tracking-wider',
+          formButtonPrimary: 'bg-[#005bf8] hover:bg-[#004cd4] text-white font-bold py-3 rounded-xl shadow-md transition-all text-sm',
+          formFieldInput: 'rounded-xl border border-gray-200 focus:border-[#005bf8] focus:ring-2 focus:ring-[#005bf8]/20 transition-all text-sm py-2.5 px-3.5',
+          socialButtonsBlockButton: 'rounded-xl border border-gray-200 hover:border-[#005bf8] hover:bg-[#f0f4ff]/50 transition-all font-semibold text-xs py-2.5',
+          footer: 'border-t border-gray-100 mt-6 pt-4 text-center',
+          footerActionText: 'text-xs text-[#787878]',
+          footerActionLink: 'text-xs font-bold text-[#005bf8] hover:underline ml-1'
         }
       }}
     >
@@ -56,8 +51,3 @@ createRoot(document.getElementById('root')).render(
     </ClerkProvider>
   </StrictMode>,
 )
-
-
-
-
-

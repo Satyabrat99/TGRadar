@@ -1,9 +1,16 @@
 import React from 'react';
 import { Radar, Bookmark, PlusCircle } from 'lucide-react';
-import { useUser, SignInButton, UserButton } from '@clerk/clerk-react';
+import { useUser, useClerk, UserButton } from '@clerk/clerk-react';
 
 export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }) {
-  const { isSignedIn, isLoaded } = useUser();
+  const { isSignedIn } = useUser();
+  const clerk = useClerk();
+
+  const handleSignIn = () => {
+    if (clerk && typeof clerk.openSignIn === 'function') {
+      clerk.openSignIn();
+    }
+  };
 
   return (
     <header className="w-full max-w-[1175px] mx-auto px-4 sm:px-6 pt-4 sm:pt-6 pb-2 relative z-30">
@@ -44,7 +51,6 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
                 {bookmarksCount}
               </span>
             )}
-
           </div>
 
           {/* Submit Community CTA Button */}
@@ -57,7 +63,7 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
             <span className="sm:hidden">Submit</span>
           </button>
 
-          {/* Clerk Auth Profile / Sign In Buttons */}
+          {/* Clerk Auth Profile / Sign In Button */}
           {isSignedIn ? (
             <div className="flex items-center flex-shrink-0">
               <UserButton 
@@ -69,11 +75,12 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
               />
             </div>
           ) : (
-            <SignInButton mode="modal">
-              <button className="bg-[#1b2045] hover:bg-[#2a3060] text-white text-xs font-bold px-3.5 sm:px-5 py-1.5 sm:py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap flex-shrink-0 cursor-pointer">
-                Sign In
-              </button>
-            </SignInButton>
+            <button 
+              onClick={handleSignIn}
+              className="bg-[#1b2045] hover:bg-[#2a3060] text-white text-xs font-bold px-3.5 sm:px-5 py-1.5 sm:py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap flex-shrink-0 cursor-pointer"
+            >
+              Sign In
+            </button>
           )}
 
         </div>
@@ -82,6 +89,3 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
     </header>
   );
 }
-
-
-
