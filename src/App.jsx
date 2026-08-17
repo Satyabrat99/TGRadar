@@ -224,8 +224,13 @@ export default function App() {
 
 
 
-  // Upvote Handler
+  // Upvote Handler (Auth-gated)
   const handleUpvote = (id) => {
+    if (!isLoaded) return;
+    if (!isSignedIn) {
+      openSignIn();
+      return;
+    }
     if (upvotedIds.includes(id)) return;
     setUpvotedIds(prev => [...prev, id]);
     setCommunities(prev => prev.map(item => 
