@@ -4,13 +4,12 @@ import { ClerkProvider } from '@clerk/clerk-react'
 import './index.css'
 import App from './App.jsx'
 
-const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-
 const envKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
 
-const PUBLISHABLE_KEY = isLocalhost
-  ? (envKey && envKey.startsWith('pk_test_') ? envKey : 'pk_test_Z2FtZS1veXN0ZXItMzkuY2xlcmsuYWNjb3VudHMuZGV2JA')
-  : (envKey && envKey.startsWith('pk_live_') ? envKey : 'pk_live_Y2xlcmsudGctcmFkYXItbmVvbi52ZXJjZWwuYXBwJA');
+// Fallback to active verified Clerk accounts.dev key if custom CNAME key is missing or unresolvable
+const PUBLISHABLE_KEY = envKey && !envKey.includes('clerk.tg-radar-neon.vercel.app')
+  ? envKey
+  : 'pk_test_Z2FtZS1veXN0ZXItMzkuY2xlcmsuYWNjb3VudHMuZGV2JA';
 
 const currentOrigin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
 

@@ -1,17 +1,8 @@
 import React from 'react';
 import { Radar, Bookmark, PlusCircle } from 'lucide-react';
-import { useUser, useClerk, UserButton } from '@clerk/clerk-react';
+import { SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/clerk-react';
 
 export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }) {
-  const { isSignedIn } = useUser();
-  const clerk = useClerk();
-
-  const handleSignIn = () => {
-    if (clerk && typeof clerk.openSignIn === 'function') {
-      clerk.openSignIn();
-    }
-  };
-
   return (
     <header className="w-full max-w-[1175px] mx-auto px-4 sm:px-6 pt-4 sm:pt-6 pb-2 relative z-30">
       <div className="bg-white/95 backdrop-blur-md rounded-full px-3.5 sm:px-6 py-2 sm:py-3 flex items-center justify-between shadow-lg border border-white/20">
@@ -46,11 +37,13 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
             >
               <Bookmark className="size-3.5 sm:size-4" />
             </button>
-            {isSignedIn && bookmarksCount > 0 && (
-              <span className="absolute -top-1 -right-1 size-4 sm:size-5 bg-[#005bf8] text-white font-extrabold text-[9px] sm:text-[10px] rounded-full flex items-center justify-center border-2 border-white shadow-md z-10 pointer-events-none">
-                {bookmarksCount}
-              </span>
-            )}
+            <SignedIn>
+              {bookmarksCount > 0 && (
+                <span className="absolute -top-1 -right-1 size-4 sm:size-5 bg-[#005bf8] text-white font-extrabold text-[9px] sm:text-[10px] rounded-full flex items-center justify-center border-2 border-white shadow-md z-10 pointer-events-none">
+                  {bookmarksCount}
+                </span>
+              )}
+            </SignedIn>
           </div>
 
           {/* Submit Community CTA Button */}
@@ -63,8 +56,8 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
             <span className="sm:hidden">Submit</span>
           </button>
 
-          {/* Clerk Auth Profile / Sign In Button */}
-          {isSignedIn ? (
+          {/* Clerk Auth Profile & Sign In Controls */}
+          <SignedIn>
             <div className="flex items-center flex-shrink-0">
               <UserButton 
                 appearance={{
@@ -74,14 +67,16 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
                 }}
               />
             </div>
-          ) : (
-            <button 
-              onClick={handleSignIn}
-              className="bg-[#1b2045] hover:bg-[#2a3060] text-white text-xs font-bold px-3.5 sm:px-5 py-1.5 sm:py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap flex-shrink-0 cursor-pointer"
-            >
-              Sign In
-            </button>
-          )}
+          </SignedIn>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button 
+                className="bg-[#1b2045] hover:bg-[#2a3060] text-white text-xs font-bold px-3.5 sm:px-5 py-1.5 sm:py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap flex-shrink-0 cursor-pointer"
+              >
+                Sign In
+              </button>
+            </SignInButton>
+          </SignedOut>
 
         </div>
 
