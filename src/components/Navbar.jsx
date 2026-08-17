@@ -88,7 +88,6 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
           ) : (
             <SignInButton mode="modal">
               <button 
-                onClick={handleSignInFallback}
                 type="button"
                 className="bg-[#1b2045] hover:bg-[#2a3060] text-white text-xs font-bold px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap flex-shrink-0 cursor-pointer touch-manipulation select-none"
               >
