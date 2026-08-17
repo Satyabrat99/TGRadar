@@ -57,25 +57,23 @@ export default function Navbar({ bookmarksCount, onOpenBookmarks, onOpenSubmit }
             <span className="sm:hidden">Submit</span>
           </button>
 
-          {/* Clerk Auth Buttons (Reactive rendering based on useUser state) */}
-          {isLoaded && (
-            isSignedIn ? (
-              <div className="flex items-center flex-shrink-0">
-                <UserButton 
-                  appearance={{
-                    elements: {
-                      userButtonAvatarBox: "size-8 sm:size-9 rounded-full shadow-md border-2 border-[#005bf8]"
-                    }
-                  }}
-                />
-              </div>
-            ) : (
-              <SignInButton mode="modal">
-                <button className="bg-[#1b2045] hover:bg-[#2a3060] text-white text-xs font-bold px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap flex-shrink-0 cursor-pointer">
-                  Sign In
-                </button>
-              </SignInButton>
-            )
+          {/* Clerk Auth Profile / Sign In Buttons */}
+          {isSignedIn ? (
+            <div className="flex items-center flex-shrink-0">
+              <UserButton 
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "size-8 sm:size-9 rounded-full shadow-md border-2 border-[#005bf8]"
+                  }
+                }}
+              />
+            </div>
+          ) : (
+            <SignInButton mode="modal">
+              <button className="bg-[#1b2045] hover:bg-[#2a3060] text-white text-xs font-bold px-3.5 sm:px-5 py-1.5 sm:py-2.5 rounded-full shadow-md transition-all active:scale-95 whitespace-nowrap flex-shrink-0 cursor-pointer">
+                Sign In
+              </button>
+            </SignInButton>
           )}
 
         </div>
