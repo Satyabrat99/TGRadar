@@ -44,8 +44,7 @@ export default function Footer({ onOpenSubmit, onOpenAnalytics }) {
           <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
           <button 
             onClick={onOpenAnalytics}
-            className="hover:text-[#58a6ff] transition-colors cursor-pointer text-gray-400 font-medium"
-            title="Platform Telemetry & Analytics"
+            className="hover:text-white transition-colors cursor-pointer uppercase tracking-wider text-[11px] text-[#bbbbbb]"
           >
             Analytics
           </button>
