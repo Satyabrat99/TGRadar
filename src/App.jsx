@@ -372,31 +372,28 @@ export default function App() {
         onOpenPreview={handleOpenPreview}
       />
 
-      {/* Render Home Page Featured & Spotlight Sections ONLY when no active search/category filter is active */}
-      {!isFiltering && (
-        <>
-          {/* Industry Categories Spotlight */}
-          <section id="categories">
-            <IndustrySpotlight 
-              selectedIndustry={selectedCategory}
-              onSelectIndustry={(cat) => {
-                setSelectedCategory(cat);
-                setSelectedSubCategory(null);
-                setSelectedTag(null);
-              }}
-              onOpenCategoriesModal={() => setIsCategoriesModalOpen(true)}
-            />
-          </section>
+      {/* Industry Categories Spotlight (Always Visible) */}
+      <section id="categories">
+        <IndustrySpotlight 
+          selectedIndustry={selectedCategory}
+          onSelectIndustry={(cat) => {
+            setSelectedCategory(cat);
+            setSelectedSubCategory(null);
+            setSelectedTag(null);
+          }}
+          onOpenCategoriesModal={() => setIsCategoriesModalOpen(true)}
+        />
+      </section>
 
-          {/* Featured Community of the Day & Trending Section */}
-          <section id="trending">
-            <CommunityOfTheDay 
-              communityOfDay={communityOfDay}
-              trendingList={trendingList}
-              onOpenPreview={handleOpenPreview}
-            />
-          </section>
-        </>
+      {/* Featured Community of the Day & Trending Section (Hidden during active search or category filtering) */}
+      {!isFiltering && (
+        <section id="trending">
+          <CommunityOfTheDay 
+            communityOfDay={communityOfDay}
+            trendingList={trendingList}
+            onOpenPreview={handleOpenPreview}
+          />
+        </section>
       )}
 
       {/* Main Filter & Communities Discovery Grid (Max 20 Items) */}
