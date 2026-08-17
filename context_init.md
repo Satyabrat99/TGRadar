@@ -55,24 +55,38 @@
    - Simplified footer links (retained Privacy Policy), connected GitHub icon to `https://github.com/Satyabrat99/TGRadar`, Telegram icon to `https://t.me/`, and wired footer Submit button to `handleOpenSubmit`.
 10. **Custom Brand Favicon**:
     - Generated clean `public/favicon.svg` with electric-blue circle and white Radar graphic.
-11. **Mobile Responsiveness & Edge Padding**:
-    - Fixed headline text wrapping on mobile screens (`<br className="hidden sm:inline" />`).
-    - Added `px-4 sm:px-6` padding across wrappers to prevent elements from touching mobile display edges.
-    - Resolved newsletter button overflow and filter tab scrolling.
+12. **Verified Database Integrity & Fake Data Purge**:
+    - Filtered out 352 synthetic candidate rows in Supabase and retained 109 genuine, active Telegram communities with verified CDN profile pictures and live subscriber counts.
+13. **Categories Directory Modal (`CategoriesModal.jsx`) Overhaul**:
+    - Replaced hardcoded counts with real-time dynamic counts computed directly from verified data.
+    - Implemented tag & topic overlap matching (`communityMatchesSubCategory`) for genuine subcategory filtering.
+    - Added pill-shaped subcategory filters with low-opacity blue highlight state (`bg-[#005bf8]/15 text-[#005bf8]`).
+    - Rendered direct `<CommunityCard />` grid inside the directory modal.
+14. **Elevated Modal Stacking Order (`z-[100]`)**:
+    - Elevated `CommunityModal` and `SubmitModal` z-index to `z-[100]` so clicking cards inside `CategoriesModal` (`z-50`) opens the preview directly on top.
+15. **Upgraded GitHub Actions Runner to Node.js 22**:
+    - Upgraded `.github/workflows/daily_discovery.yml` to `node-version: '22'` to provide native global WebSocket support required by `@supabase/supabase-js`.
+16. **Visitor Tracking & Hidden Analytics Dashboard (`AnalyticsDashboard.jsx`)**:
+    - Created lightweight, privacy-friendly event tracking engine (`src/lib/analytics.js`) recording page views, unique visitor sessions, search queries, and Telegram outbound conversion clicks.
+    - Built a high-tech hidden dashboard (`src/components/AnalyticsDashboard.jsx`) with live telemetry, 7-day traffic timeline charts, top clicked communities, search keyword rankings, and real-time visitor event feeds.
+    - Added hidden discreet link in `Footer.jsx` and accessible via `#/analytics`.
 
 ---
 
 ## 4. Key Component Structure & Entry Points
 
-- **`src/App.jsx`**: Main application state, Supabase data loader, Clerk metadata sync, and modal orchestrator.
+- **`src/App.jsx`**: Main application state, Supabase data loader, Clerk metadata sync, visitor tracking, and modal orchestrator.
+- **`src/components/AnalyticsDashboard.jsx`**: Dedicated hidden platform analytics view with visual KPI cards, traffic charts, and real-time interaction logs.
+- **`src/lib/analytics.js`**: Client-side telemetry tracking library for page views, unique sessions, searches, and outbound Telegram join clicks.
 - **`src/components/Navbar.jsx`**: Floating glassmorphic header with logo, 5 nav links, bookmarks badge, submit CTA, and Clerk auth controls.
 - **`src/components/Hero.jsx`**: Animated parallax hero section with live indexed counter, search bar with suggestions, and stat cards.
 - **`src/components/FilterBar.jsx`**: Real-time glassmorphic category selector, search query filters, and NSFW toggle.
 - **`src/components/CommunityCard.jsx`**: Primary card component for rendering channels/groups with upvotes, categories, and gold/blue verified badges.
 - **`src/components/CommunityOfTheDay.jsx`**: Showcase section for top featured community and top-3 trending podium leaderboard.
-- **`src/components/CommunityModal.jsx`**: High-detail popover modal for community inspection.
+- **`src/components/CommunityModal.jsx`**: High-detail popover modal (`z-[100]`) for community inspection.
+- **`src/components/CategoriesModal.jsx`**: Deep category directory modal with real dynamic counts, subcategory pill filters, and direct community grid.
 - **`src/components/BookmarksDrawer.jsx`**: Slide-over drawer displaying user-saved bookmarks from Clerk cloud metadata.
-- **`src/components/Footer.jsx`**: Dark footer with submit CTA, privacy policy, and external social redirects.
+- **`src/components/Footer.jsx`**: Dark footer with submit CTA, privacy policy, external social redirects, and discrete link to Analytics.
 
 ---
 
