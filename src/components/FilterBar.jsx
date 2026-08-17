@@ -27,21 +27,21 @@ export default function FilterBar({
 
   return (
     <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-2 sm:py-4">
-      <div className="relative overflow-hidden bg-white/95 backdrop-blur-xl rounded-[28px] p-4 sm:p-5 border border-[#e9eef8] shadow-[0_10px_35px_rgba(0,91,248,0.05)] flex flex-col gap-3.5 transition-all">
+      <div className="relative overflow-hidden bg-white/95 backdrop-blur-xl rounded-[28px] p-3.5 sm:p-5 border border-[#e9eef8] shadow-[0_10px_35px_rgba(0,91,248,0.05)] flex flex-col gap-3 transition-all">
         
         {/* Subtle Decorative Background Gradient Glow */}
         <div className="absolute top-0 right-0 w-64 h-32 bg-gradient-to-bl from-[#005bf8]/5 via-transparent to-transparent pointer-events-none rounded-tr-[28px]" />
 
-        {/* Top Row: Breadcrumb Filters & Segmented Control */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3.5 relative z-10">
+        {/* Responsive Controls Container */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 relative z-10">
           
-          {/* Left: Active Breadcrumb Trail Navigation */}
-          <div className="flex items-center gap-2 overflow-x-auto py-0.5 max-w-full text-left scrollbar-none w-full lg:w-auto">
+          {/* Breadcrumb Filter Trail */}
+          <div className="flex items-center gap-2 overflow-x-auto py-0.5 max-w-full text-left no-scrollbar flex-1">
             
             {/* All Reset Pill */}
             <button
               onClick={onClearFilters}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 active:scale-95 ${
+              className={`px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 flex-shrink-0 active:scale-95 ${
                 !selectedCategory && !selectedSubCategory && !selectedTag && !showNsfwOnly && !selectedType
                   ? 'bg-[#005bf8] text-white shadow-md shadow-[#005bf8]/20'
                   : 'bg-[#f0f4ff] hover:bg-[#e2edff] text-[#005bf8] border border-[#dbe6fe]'
@@ -54,8 +54,8 @@ export default function FilterBar({
             {/* Parent Category Breadcrumb */}
             {selectedCategory && (
               <>
-                <ChevronRight className="size-3.5 text-gray-300 flex-shrink-0" />
-                <span className="bg-[#005bf8]/10 text-[#005bf8] text-xs font-extrabold px-3 py-1.5 rounded-xl whitespace-nowrap flex items-center gap-1 border border-[#005bf8]/20">
+                <ChevronRight className="size-3 text-gray-300 flex-shrink-0" />
+                <span className="bg-[#005bf8]/10 text-[#005bf8] text-xs font-extrabold px-3 py-1.5 rounded-xl whitespace-nowrap flex items-center gap-1 border border-[#005bf8]/20 flex-shrink-0">
                   <span>{selectedCategory}</span>
                 </span>
               </>
@@ -64,8 +64,8 @@ export default function FilterBar({
             {/* Sub-Category Breadcrumb */}
             {selectedSubCategory && (
               <>
-                <ChevronRight className="size-3.5 text-gray-300 flex-shrink-0" />
-                <div className="bg-[#005bf8] text-white text-xs font-extrabold px-3 py-1.5 rounded-xl whitespace-nowrap flex items-center gap-1.5 shadow-sm">
+                <ChevronRight className="size-3 text-gray-300 flex-shrink-0" />
+                <div className="bg-[#005bf8] text-white text-xs font-extrabold px-3 py-1.5 rounded-xl whitespace-nowrap flex items-center gap-1.5 shadow-sm flex-shrink-0">
                   <span>{selectedSubCategory}</span>
                   <button 
                     onClick={onClearSubCategory}
@@ -81,8 +81,8 @@ export default function FilterBar({
             {/* Micro-Tag Breadcrumb */}
             {selectedTag && (
               <>
-                <ChevronRight className="size-3.5 text-gray-300 flex-shrink-0" />
-                <div className="bg-[#7c3aed] text-white text-xs font-extrabold px-3 py-1.5 rounded-xl whitespace-nowrap flex items-center gap-1.5 shadow-sm">
+                <ChevronRight className="size-3 text-gray-300 flex-shrink-0" />
+                <div className="bg-[#7c3aed] text-white text-xs font-extrabold px-3 py-1.5 rounded-xl whitespace-nowrap flex items-center gap-1.5 shadow-sm flex-shrink-0">
                   <Hash className="size-3" />
                   <span>{selectedTag}</span>
                   <button 
@@ -99,7 +99,7 @@ export default function FilterBar({
             {hasActiveFilters && (
               <button
                 onClick={onClearFilters}
-                className="text-[11px] font-extrabold text-[#787878] hover:text-red-600 bg-gray-50 hover:bg-red-50 border border-gray-200 hover:border-red-200 px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition-all ml-1 cursor-pointer whitespace-nowrap"
+                className="text-[11px] font-extrabold text-[#787878] hover:text-red-600 bg-gray-50 hover:bg-red-50 border border-gray-200 hover:border-red-200 px-2.5 py-1.5 rounded-xl flex items-center gap-1 transition-all ml-1 cursor-pointer whitespace-nowrap flex-shrink-0"
                 title="Reset all filters"
               >
                 <RotateCcw className="size-3" />
@@ -109,13 +109,13 @@ export default function FilterBar({
 
           </div>
 
-          {/* Right: NSFW Pill & Apple-Style Segmented Type Tabs */}
-          <div className="flex items-center gap-2.5 self-stretch sm:self-auto flex-wrap sm:flex-nowrap justify-between sm:justify-end flex-shrink-0 w-full lg:w-auto">
+          {/* Right: NSFW Pill & Type Segmented Control */}
+          <div className="flex items-center justify-between sm:justify-end gap-2 flex-shrink-0 w-full md:w-auto">
             
             {/* 18+ NSFW Toggle Button */}
             <button
               onClick={onToggleNsfw}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
+              className={`px-3 py-1.5 sm:px-3.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer flex-shrink-0 active:scale-95 ${
                 showNsfwOnly
                   ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md shadow-red-500/25 border border-red-400'
                   : 'bg-red-50/80 hover:bg-red-100 text-red-600 border border-red-200/80'
@@ -126,8 +126,8 @@ export default function FilterBar({
               <span>18+ NSFW</span>
             </button>
 
-            {/* Segmented Type Controller */}
-            <div className="bg-[#f0f4ff]/90 p-1 rounded-full border border-[#dbe6fe] flex items-center gap-1 shadow-inner overflow-x-auto max-w-full no-scrollbar">
+            {/* Apple-Style Type Segmented Control (Zero Scrollbar) */}
+            <div className="bg-[#f0f4ff]/90 p-1 rounded-full border border-[#dbe6fe] flex items-center gap-0.5 sm:gap-1 shadow-inner overflow-x-auto max-w-full no-scrollbar flex-shrink-0">
               {typeTabs.map(({ id, label, icon: Icon }) => {
                 const isActive = (id === 'all' && !selectedType) || selectedType === id;
                 return (
@@ -152,7 +152,7 @@ export default function FilterBar({
         </div>
 
         {/* Bottom Row: Live Data Metrics & Real-time Indicator */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-semibold text-[#787878] pt-2.5 border-t border-[#f0f3fa] relative z-10">
+        <div className="flex flex-row items-center justify-between gap-2 text-xs font-semibold text-[#787878] pt-2 border-t border-[#f0f3fa] relative z-10">
           <div className="flex items-center gap-2 text-[#1b2045]">
             <div className="size-5 rounded-full bg-[#f0f4ff] flex items-center justify-center text-[#005bf8] flex-shrink-0">
               <Sparkles className="size-3" />
@@ -162,12 +162,13 @@ export default function FilterBar({
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-[#787878]">
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-[#787878] flex-shrink-0">
             <span className="relative flex size-2 flex-shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full size-2 bg-emerald-500"></span>
             </span>
-            <span>Live Sync · Updated in real-time</span>
+            <span className="hidden xs:inline">Live Sync · </span>
+            <span>Updated real-time</span>
           </div>
         </div>
 
@@ -175,4 +176,3 @@ export default function FilterBar({
     </div>
   );
 }
-

@@ -20,6 +20,15 @@
   }
 }
 
+/* Hide scrollbars across all browsers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* ── Clerk Auth Modal Custom Brand Styling ─────────────────── */
 .cl-modalBackdrop {
   background-color: rgba(15, 23, 42, 0.6) !important;
