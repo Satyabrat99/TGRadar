@@ -19,6 +19,8 @@ export default function Hero({
   const heroRef = useRef(null);
 
   function handleMouseMove(e) {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) return;
+    if (e && e.pointerType === 'touch') return;
     const rect = heroRef.current?.getBoundingClientRect();
     if (!rect) return;
     const cx = rect.width / 2;
