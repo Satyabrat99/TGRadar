@@ -347,6 +347,16 @@ export default function App() {
     );
   }
 
+  // Check if active search or category/type/tag filter is engaged
+  const isFiltering = Boolean(
+    searchQuery.trim() || 
+    selectedCategory || 
+    selectedSubCategory || 
+    selectedTag || 
+    selectedType || 
+    showNsfwOnly
+  );
+
   return (
     <div className="min-h-screen bg-[#f9f9f9] text-[#1b2045] flex flex-col font-sans antialiased selection:bg-[#005bf8] selection:text-white">
       
@@ -362,27 +372,32 @@ export default function App() {
         onOpenPreview={handleOpenPreview}
       />
 
-      {/* Featured Community of the Day & Trending Section */}
-      <section id="trending">
-        <CommunityOfTheDay 
-          communityOfDay={communityOfDay}
-          trendingList={trendingList}
-          onOpenPreview={handleOpenPreview}
-        />
-      </section>
+      {/* Render Home Page Featured & Spotlight Sections ONLY when no active search/category filter is active */}
+      {!isFiltering && (
+        <>
+          {/* Industry Categories Spotlight */}
+          <section id="categories">
+            <IndustrySpotlight 
+              selectedIndustry={selectedCategory}
+              onSelectIndustry={(cat) => {
+                setSelectedCategory(cat);
+                setSelectedSubCategory(null);
+                setSelectedTag(null);
+              }}
+              onOpenCategoriesModal={() => setIsCategoriesModalOpen(true)}
+            />
+          </section>
 
-      {/* Industry Categories Spotlight */}
-      <section id="categories">
-        <IndustrySpotlight 
-          selectedIndustry={selectedCategory}
-          onSelectIndustry={(cat) => {
-            setSelectedCategory(cat);
-            setSelectedSubCategory(null);
-            setSelectedTag(null);
-          }}
-          onOpenCategoriesModal={() => setIsCategoriesModalOpen(true)}
-        />
-      </section>
+          {/* Featured Community of the Day & Trending Section */}
+          <section id="trending">
+            <CommunityOfTheDay 
+              communityOfDay={communityOfDay}
+              trendingList={trendingList}
+              onOpenPreview={handleOpenPreview}
+            />
+          </section>
+        </>
+      )}
 
       {/* Main Filter & Communities Discovery Grid (Max 20 Items) */}
       <main id="explore" className="w-full max-w-[1200px] mx-auto px-4 py-8 flex flex-col gap-6">
