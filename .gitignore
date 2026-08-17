@@ -27,3 +27,11 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Temporary & One-off Test/Harvest Scripts
+scripts/harvest_*
+scripts/test_*
+scripts/fix_*
+scripts/clean_*
+scripts/inspect_*
+
