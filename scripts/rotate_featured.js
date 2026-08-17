@@ -42,8 +42,8 @@ async function rotateFeatured() {
     .select('id, title, username, rating, upvotes, subscribers, featured_date, is_community_of_day, trend_rank');
 
   if (error) {
-    console.error('❌ Failed to fetch communities:', error.message);
-    process.exit(1);
+    console.error('⚠️ Failed to fetch communities:', error.message);
+    return;
   }
 
   console.log(`📡 Loaded ${all.length} communities from Supabase.\n`);

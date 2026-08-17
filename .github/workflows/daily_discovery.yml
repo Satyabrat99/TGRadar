@@ -38,14 +38,6 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: node scripts/daily_discovery.js
 
-      - name: Run Avatar Recovery (fix missing profile photos)
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: node scripts/fix_avatars.js
-
   # ════════════════════════════════════════════════════════════════════
   # JOB 2 — Featured Rotation (runs once daily at midnight UTC)
   # Rotates Community of the Day + Trending via Hidden Gem Algorithm
