@@ -108,7 +108,7 @@ export default function SubmitModal({ isOpen, onClose, onSubmitCommunity }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1b2045]/40 backdrop-blur-sm animate-fadeIn">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#1b2045]/40 backdrop-blur-sm animate-fadeIn">
       
       {/* Backdrop Click Dismiss */}
       <div className="absolute inset-0" onClick={onClose}></div>

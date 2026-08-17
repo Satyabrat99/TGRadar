@@ -62,7 +62,7 @@ export default function CommunityModal({
     : 'TG';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fadeIn">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fadeIn">
       
       {/* Backdrop Dismiss */}
       <div className="absolute inset-0" onClick={onClose}></div>

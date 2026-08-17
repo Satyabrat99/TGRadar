@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { X, Search, ChevronRight, Hash, Sparkles, Layers, ArrowLeft, ExternalLink, Filter, Radio, MessageSquare, AppWindow, Check } from 'lucide-react';
+import { X, Search, ChevronRight, Hash, Sparkles, Layers, ArrowLeft, ExternalLink, Filter, Radio, MessageSquare, AppWindow } from 'lucide-react';
 import { CATEGORY_HIERARCHY } from '../data/categoryHierarchy';
 import CommunityCard from './CommunityCard';
 
@@ -279,28 +279,27 @@ export default function CategoriesModal({
                     </div>
                   </div>
 
-                  {/* Structured Filter Button Group */}
-                  <div className="flex items-center gap-2 self-start sm:self-auto">
-                    <button
-                      onClick={handleApplyToMainPage}
-                      className="bg-[#005bf8] hover:bg-[#0047c9] text-white text-xs font-extrabold px-4 py-2.5 rounded-full transition-all shadow-md active:scale-95 flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
-                    >
-                      <Filter className="size-3.5" />
-                      <span>Filter Main Discovery Page</span>
-                    </button>
-                  </div>
+                  {/* Filter Main Discovery Page Button */}
+                  <button
+                    onClick={handleApplyToMainPage}
+                    className="bg-[#005bf8] hover:bg-[#0047c9] text-white text-xs font-extrabold px-4 py-2.5 rounded-full transition-all shadow-md active:scale-95 flex items-center gap-1.5 cursor-pointer whitespace-nowrap self-start sm:self-auto"
+                  >
+                    <Filter className="size-3.5" />
+                    <span>Filter Main Discovery Page</span>
+                  </button>
                 </div>
 
-                {/* Structured Subcategories & Type Filter Pills */}
+                {/* Structured Subcategories & Type Filter Pills Bar */}
                 <div className="flex flex-col gap-2.5 bg-[#f8fafc] p-3 rounded-2xl border border-[#e9e9e9]">
-                  {/* Subcategory Pills Row */}
-                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                  
+                  {/* Clean Pill Subcategory Filters without Scrollbars */}
+                  <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
                     <button
                       onClick={() => setActiveSubCategory(null)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                         !activeSubCategory
-                          ? 'bg-[#005bf8] text-white shadow-sm'
-                          : 'bg-white text-[#4f4f4f] hover:bg-gray-100 border border-[#e2e8f5]'
+                          ? 'bg-[#005bf8]/15 text-[#005bf8] border border-[#005bf8]/30 shadow-xs'
+                          : 'bg-white text-[#4f4f4f] hover:bg-[#f0f4ff] hover:text-[#005bf8] border border-[#e2e8f5]'
                       }`}
                     >
                       <span>All Sub-categories</span>
@@ -313,14 +312,16 @@ export default function CategoriesModal({
                         <button
                           key={sub.id}
                           onClick={() => setActiveSubCategory(isActive ? null : sub.name)}
-                          className={`px-3 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
+                          className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                             isActive
-                              ? 'bg-[#1b2045] text-white shadow-sm'
-                              : 'bg-white text-[#4f4f4f] hover:bg-gray-100 border border-[#e2e8f5]'
+                              ? 'bg-[#005bf8]/15 text-[#005bf8] border border-[#005bf8]/30 shadow-xs'
+                              : 'bg-white text-[#4f4f4f] hover:bg-[#f0f4ff] hover:text-[#005bf8] border border-[#e2e8f5]'
                           }`}
                         >
                           <span>{sub.name}</span>
-                          <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${isActive ? 'bg-white/20 text-white' : 'bg-[#f0f4ff] text-[#005bf8]'}`}>
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                            isActive ? 'bg-[#005bf8] text-white' : 'bg-[#f0f4ff] text-[#005bf8] border border-[#dbe6fe]'
+                          }`}>
                             {subRealCount}
                           </span>
                         </button>
@@ -328,7 +329,7 @@ export default function CategoriesModal({
                     })}
                   </div>
 
-                  {/* Type Filter Pills Row (Channels / Groups / Mini Apps) */}
+                  {/* Format Pills Row (Channels / Groups / Mini Apps) */}
                   <div className="flex items-center gap-1.5 border-t border-[#e2e8f5] pt-2 overflow-x-auto no-scrollbar">
                     <span className="text-[10px] font-extrabold uppercase text-[#787878] tracking-wider mr-1">Format:</span>
                     {[
