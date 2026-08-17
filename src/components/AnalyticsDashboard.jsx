@@ -110,48 +110,36 @@ export default function AnalyticsDashboard({ onBackToApp }) {
   return (
     <div className="min-h-screen bg-[#f8fafc] text-[#0f172a] flex flex-col font-sans antialiased selection:bg-[#005bf8] selection:text-white">
       
-      {/* Top Floating Header */}
-      <header className="w-full bg-white/90 backdrop-blur-md border-b border-[#e2e8f0] sticky top-0 z-40 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xs">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={onBackToApp}
-            className="flex items-center gap-2 bg-[#f0f4ff] hover:bg-[#e0ebff] text-[#005bf8] px-4 py-2 rounded-full text-xs font-extrabold transition-all cursor-pointer border border-[#dbe6fe] active:scale-95 shadow-xs"
-          >
-            <ArrowLeft className="size-4" />
-            <span>Back to Directory</span>
-          </button>
-          
+      {/* Top Floating Glass Header */}
+      <header className="w-full bg-white/95 backdrop-blur-md border-b border-[#e2e8f0] sticky top-0 z-40">
+        <div className="max-w-[1240px] mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="size-10 rounded-2xl bg-gradient-to-br from-[#005bf8] to-[#3b82f6] text-white flex items-center justify-center shadow-md">
-              <BarChart3 className="size-5" />
-            </div>
-            <div className="flex flex-col text-left">
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg font-black text-[#0f172a] tracking-tight">Platform Telemetry & Analytics</h1>
-                <span className="bg-[#005bf8]/10 text-[#005bf8] border border-[#005bf8]/20 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-                  <span className="size-1.5 rounded-full bg-[#005bf8] animate-ping"></span>
-                  Live Monitor
-                </span>
-              </div>
-              <p className="text-xs text-[#64748b]">Real-time visitor tracking & Telegram conversion insights</p>
-            </div>
+            <button
+              onClick={onBackToApp}
+              className="flex items-center gap-1.5 text-xs font-extrabold text-[#005bf8] bg-[#f0f4ff] hover:bg-[#e0ebff] px-3.5 py-1.5 rounded-full border border-[#dbe6fe] transition-all cursor-pointer active:scale-95 shadow-2xs"
+            >
+              <ArrowLeft className="size-3.5" />
+              <span>Back</span>
+            </button>
+            
+            <div className="h-4 w-px bg-[#e2e8f0]"></div>
+            
+            <h1 className="text-base font-black text-[#0f172a] tracking-tight">Analytics</h1>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-1.5 text-xs text-[#64748b] bg-[#f1f5f9] px-3 py-1.5 rounded-full border border-[#e2e8f0]">
-            <Clock className="size-3.5 text-[#005bf8]" />
-            <span>Updated {formatRelativeTime(lastRefreshed)}</span>
+          <div className="flex items-center gap-3 text-xs text-[#64748b]">
+            <span className="hidden sm:inline-block font-semibold">
+              Updated {formatRelativeTime(lastRefreshed)}
+            </span>
+            <button
+              onClick={loadData}
+              disabled={loading}
+              className="p-2 rounded-full hover:bg-[#f1f5f9] text-[#0f172a] transition-all cursor-pointer border border-[#e2e8f0] active:scale-95 disabled:opacity-50"
+              title="Refresh"
+            >
+              <RefreshCw className={`size-3.5 ${loading ? 'animate-spin text-[#005bf8]' : ''}`} />
+            </button>
           </div>
-          
-          <button
-            onClick={loadData}
-            disabled={loading}
-            className="p-2.5 rounded-full bg-white hover:bg-[#f1f5f9] text-[#0f172a] transition-all cursor-pointer border border-[#e2e8f0] shadow-xs active:scale-95 disabled:opacity-50"
-            title="Refresh Analytics"
-          >
-            <RefreshCw className={`size-4 ${loading ? 'animate-spin text-[#005bf8]' : ''}`} />
-          </button>
         </div>
       </header>
 
