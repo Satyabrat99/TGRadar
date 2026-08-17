@@ -14,8 +14,7 @@ import {
   Globe,
   Sparkles,
   MousePointerClick,
-  Clock,
-  Compass
+  Clock
 } from 'lucide-react';
 import { fetchAnalyticsData } from '../lib/analytics';
 
@@ -23,7 +22,7 @@ export default function AnalyticsDashboard({ onBackToApp }) {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [hoveredIdx, setHoveredIdx] = useState(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -51,64 +50,67 @@ export default function AnalyticsDashboard({ onBackToApp }) {
     return `${Math.floor(diffHrs / 24)}d ago`;
   };
 
-  // SVG Line Graph Calculations
+  // 7-Day Chart SVG Math (Shadcn Recharts Style)
   const days = stats?.last7Days || [];
   const maxVal = Math.max(...days.map(d => Math.max(d.views, d.joins)), 5);
 
   const svgW = 760;
-  const svgH = 200;
-  const padX = 45;
+  const svgH = 220;
+  const padX = 40;
   const padY = 30;
-  const gWidth = svgW - padX * 2;
-  const gHeight = svgH - padY * 2;
+  const graphW = svgW - padX * 2;
+  const graphH = svgH - padY * 2;
 
   const ptsViews = days.map((d, i) => ({
-    x: padX + (i / Math.max(days.length - 1, 1)) * gWidth,
-    y: padY + gHeight - (d.views / maxVal) * gHeight,
+    x: padX + (i / Math.max(days.length - 1, 1)) * graphW,
+    y: padY + graphH - (d.views / maxVal) * graphH,
     val: d.views,
     date: d.date
   }));
 
   const ptsJoins = days.map((d, i) => ({
-    x: padX + (i / Math.max(days.length - 1, 1)) * gWidth,
-    y: padY + gHeight - (d.joins / maxVal) * gHeight,
+    x: padX + (i / Math.max(days.length - 1, 1)) * graphW,
+    y: padY + graphH - (d.joins / maxVal) * graphH,
     val: d.joins,
     date: d.date
   }));
 
-  // Smooth Cubic Bezier Curves
-  const buildCurvedPath = (pts) => {
+  // Smooth Monotone Catmull-Rom / Bezier Curve for Shadcn Spline
+  const createSplinePath = (pts) => {
     if (!pts || pts.length === 0) return '';
     if (pts.length === 1) return `M ${pts[0].x},${pts[0].y}`;
-    
-    let path = `M ${pts[0].x},${pts[0].y}`;
+
+    let d = `M ${pts[0].x},${pts[0].y}`;
     for (let i = 0; i < pts.length - 1; i++) {
-      const curr = pts[i];
-      const next = pts[i + 1];
-      const cp1x = curr.x + (next.x - curr.x) * 0.4;
-      const cp1y = curr.y;
-      const cp2x = curr.x + (next.x - curr.x) * 0.6;
-      const cp2y = next.y;
-      path += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${next.x},${next.y}`;
+      const p0 = pts[i];
+      const p1 = pts[i + 1];
+      const cpX1 = p0.x + (p1.x - p0.x) * 0.45;
+      const cpY1 = p0.y;
+      const cpX2 = p0.x + (p1.x - p0.x) * 0.55;
+      const cpY2 = p1.y;
+      d += ` C ${cpX1},${cpY1} ${cpX2},${cpY2} ${p1.x},${p1.y}`;
     }
-    return path;
+    return d;
   };
 
-  const pathViews = buildCurvedPath(ptsViews);
-  const pathJoins = buildCurvedPath(ptsJoins);
+  const pathViewsD = createSplinePath(ptsViews);
+  const pathJoinsD = createSplinePath(ptsJoins);
 
-  const areaViews = ptsViews.length > 0 
-    ? `${pathViews} L ${ptsViews[ptsViews.length - 1].x},${svgH - padY} L ${ptsViews[0].x},${svgH - padY} Z`
+  const areaViewsD = ptsViews.length > 0 
+    ? `${pathViewsD} L ${ptsViews[ptsViews.length - 1].x},${svgH - padY} L ${ptsViews[0].x},${svgH - padY} Z`
     : '';
 
-  const areaJoins = ptsJoins.length > 0 
-    ? `${pathJoins} L ${ptsJoins[ptsJoins.length - 1].x},${svgH - padY} L ${ptsJoins[0].x},${svgH - padY} Z`
+  const areaJoinsD = ptsJoins.length > 0 
+    ? `${pathJoinsD} L ${ptsJoins[ptsJoins.length - 1].x},${svgH - padY} L ${ptsJoins[0].x},${svgH - padY} Z`
     : '';
+
+  const activeDay = hoveredIdx !== null ? days[hoveredIdx] : null;
+  const activePtView = hoveredIdx !== null ? ptsViews[hoveredIdx] : null;
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-[#0f172a] flex flex-col font-sans antialiased selection:bg-[#005bf8] selection:text-white">
       
-      {/* Top Floating Glass Header */}
+      {/* Top Floating Header */}
       <header className="w-full bg-white/90 backdrop-blur-md border-b border-[#e2e8f0] sticky top-0 z-40 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-4">
           <button
@@ -231,49 +233,53 @@ export default function AnalyticsDashboard({ onBackToApp }) {
 
         </div>
 
-        {/* 7-Day Traffic SVG Line Graph Section */}
-        <div className="bg-white border border-[#e2e8f0] rounded-[32px] p-6 flex flex-col gap-4 shadow-xs">
+        {/* SHADCN-STYLE 7-DAY TRAFFIC LINE CHART */}
+        <div className="bg-white border border-[#e2e8f0] rounded-[32px] p-6 flex flex-col gap-4 shadow-xs relative">
           
+          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#f1f5f9] pb-4">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-2xl bg-[#005bf8]/10 text-[#005bf8]">
                 <TrendingUp className="size-5" />
               </div>
               <div className="flex flex-col">
-                <h2 className="text-base font-black text-[#0f172a]">7-Day Daily Traffic Volume</h2>
-                <span className="text-xs text-[#64748b] font-medium">Smooth telemetry curve comparing Page Views vs. Telegram Outbound Clicks</span>
+                <h2 className="text-base font-black text-[#0f172a]">7-Day Traffic Volume</h2>
+                <span className="text-xs text-[#64748b] font-medium">Page views vs. Telegram outbound clicks over the last 7 days</span>
               </div>
             </div>
             
             <div className="flex items-center gap-4 text-xs font-extrabold bg-[#f8fafc] px-3.5 py-1.5 rounded-full border border-[#e2e8f0]">
               <span className="flex items-center gap-1.5 text-[#005bf8]">
-                <span className="size-2.5 rounded-full bg-[#005bf8]"></span>
+                <span className="size-2 rounded-full bg-[#005bf8]"></span>
                 Page Views
               </span>
               <span className="flex items-center gap-1.5 text-emerald-600">
-                <span className="size-2.5 rounded-full bg-emerald-500"></span>
+                <span className="size-2 rounded-full bg-emerald-500"></span>
                 Telegram Joins
               </span>
             </div>
           </div>
 
-          {/* SVG Line Graph Canvas */}
-          <div className="relative w-full pt-2">
+          {/* Shadcn Chart Canvas */}
+          <div 
+            className="relative w-full overflow-hidden select-none pt-2"
+            onMouseLeave={() => setHoveredIdx(null)}
+          >
             <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-auto overflow-visible">
               <defs>
                 <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#005bf8" stopOpacity="0.22" />
+                  <stop offset="0%" stopColor="#005bf8" stopOpacity="0.15" />
                   <stop offset="100%" stopColor="#005bf8" stopOpacity="0.0" />
                 </linearGradient>
                 <linearGradient id="emeraldGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#10b981" stopOpacity="0.22" />
+                  <stop offset="0%" stopColor="#10b981" stopOpacity="0.15" />
                   <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
                 </linearGradient>
               </defs>
 
-              {/* Horizontal Reference Lines */}
+              {/* Horizontal Reference Gridlines */}
               {[0, 0.33, 0.66, 1].map((ratio, idx) => {
-                const y = padY + ratio * gHeight;
+                const y = padY + ratio * graphH;
                 return (
                   <line 
                     key={idx} 
@@ -282,64 +288,133 @@ export default function AnalyticsDashboard({ onBackToApp }) {
                     x2={svgW - padX} 
                     y2={y} 
                     stroke="#f1f5f9" 
-                    strokeDasharray="4 4"
+                    strokeDasharray="3 3"
                     strokeWidth="1.5"
                   />
                 );
               })}
 
-              {/* Smooth Area Gradient Fills */}
-              {areaViews && <path d={areaViews} fill="url(#blueGradient)" />}
-              {areaJoins && <path d={areaJoins} fill="url(#emeraldGradient)" />}
+              {/* Translucent Area Fills */}
+              {areaViewsD && <path d={areaViewsD} fill="url(#blueGradient)" />}
+              {areaJoinsD && <path d={areaJoinsD} fill="url(#emeraldGradient)" />}
 
-              {/* Curved Spline Paths */}
-              {pathViews && (
-                <path d={pathViews} fill="none" stroke="#005bf8" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-              )}
-              {pathJoins && (
-                <path d={pathJoins} fill="none" stroke="#10b981" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+              {/* Active Hover Vertical Cursor Line (Shadcn Style) */}
+              {hoveredIdx !== null && activePtView && (
+                <line
+                  x1={activePtView.x}
+                  y1={padY}
+                  x2={activePtView.x}
+                  y2={svgH - padY}
+                  stroke="#cbd5e1"
+                  strokeDasharray="3 3"
+                  strokeWidth="1.5"
+                />
               )}
 
-              {/* Data Points */}
+              {/* Smooth Spline Paths */}
+              {pathViewsD && (
+                <path d={pathViewsD} fill="none" stroke="#005bf8" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
+              )}
+              {pathJoinsD && (
+                <path d={pathJoinsD} fill="none" stroke="#10b981" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
+              )}
+
+              {/* Node Dots: Page Views (Electric Blue) */}
+              {ptsViews.map((pt, idx) => {
+                const isHovered = hoveredIdx === idx;
+                return (
+                  <g key={`v-${idx}`} className="cursor-pointer">
+                    {isHovered && (
+                      <circle cx={pt.x} cy={pt.y} r="8" fill="#005bf8" fillOpacity="0.18" />
+                    )}
+                    <circle 
+                      cx={pt.x} 
+                      cy={pt.y} 
+                      r={isHovered ? "4.5" : "3.5"} 
+                      fill="#ffffff" 
+                      stroke="#005bf8" 
+                      strokeWidth="2.5" 
+                    />
+                  </g>
+                );
+              })}
+
+              {/* Node Dots: Telegram Joins (Emerald Green) */}
+              {ptsJoins.map((pt, idx) => {
+                const isHovered = hoveredIdx === idx;
+                return (
+                  <g key={`j-${idx}`} className="cursor-pointer">
+                    {isHovered && (
+                      <circle cx={pt.x} cy={pt.y} r="8" fill="#10b981" fillOpacity="0.18" />
+                    )}
+                    <circle 
+                      cx={pt.x} 
+                      cy={pt.y} 
+                      r={isHovered ? "4.5" : "3.5"} 
+                      fill="#ffffff" 
+                      stroke="#10b981" 
+                      strokeWidth="2.5" 
+                    />
+                  </g>
+                );
+              })}
+
+              {/* Hover Trigger Zones across X-Axis */}
               {ptsViews.map((pt, idx) => (
-                <g key={`view-${idx}`} className="cursor-pointer" onMouseEnter={() => setHoveredIndex(idx)}>
-                  <circle cx={pt.x} cy={pt.y} r="6" fill="#ffffff" stroke="#005bf8" strokeWidth="3" className="transition-transform hover:scale-150" />
-                </g>
+                <rect
+                  key={`zone-${idx}`}
+                  x={pt.x - graphW / (days.length * 2)}
+                  y={padY}
+                  width={graphW / days.length}
+                  height={graphH}
+                  fill="transparent"
+                  className="cursor-pointer"
+                  onMouseEnter={() => setHoveredIdx(idx)}
+                />
               ))}
 
-              {ptsJoins.map((pt, idx) => (
-                <g key={`join-${idx}`} className="cursor-pointer" onMouseEnter={() => setHoveredIndex(idx)}>
-                  <circle cx={pt.x} cy={pt.y} r="5" fill="#ffffff" stroke="#10b981" strokeWidth="3" className="transition-transform hover:scale-150" />
-                </g>
-              ))}
-
-              {/* X-Axis Day Labels */}
+              {/* X-Axis Day Tick Labels */}
               {ptsViews.map((pt, idx) => (
                 <text
-                  key={`label-${idx}`}
+                  key={`lbl-${idx}`}
                   x={pt.x}
-                  y={svgH - 4}
+                  y={svgH - 6}
                   textAnchor="middle"
-                  fill="#64748b"
+                  fill={hoveredIdx === idx ? "#0f172a" : "#64748b"}
                   fontSize="11"
-                  fontWeight="800"
+                  fontWeight={hoveredIdx === idx ? "800" : "600"}
                 >
                   {pt.date}
                 </text>
               ))}
             </svg>
 
-            {/* Interactive Floating Tooltip */}
-            {hoveredIndex !== null && days[hoveredIndex] && (
-              <div className="absolute top-2 right-4 bg-[#0f172a] text-white p-3.5 rounded-2xl shadow-xl text-xs flex flex-col gap-1.5 border border-[#005bf8]/30 animate-fadeIn z-10">
-                <span className="font-black text-[#3b82f6] border-b border-gray-800 pb-1">{days[hoveredIndex].date} Overview</span>
-                <div className="flex items-center justify-between gap-5 font-semibold text-gray-300">
-                  <span>Page Views:</span>
-                  <span className="font-extrabold text-white">{days[hoveredIndex].views}</span>
+            {/* Shadcn-Style Floating Tooltip */}
+            {hoveredIdx !== null && activeDay && activePtView && (
+              <div 
+                className="absolute top-2 bg-white/95 backdrop-blur-md border border-[#e2e8f0] text-[#0f172a] p-3 rounded-2xl shadow-xl text-xs flex flex-col gap-1.5 transition-all duration-150 pointer-events-none z-20 min-w-[150px]"
+                style={{
+                  left: `${Math.min(Math.max((activePtView.x / svgW) * 100, 15), 85)}%`,
+                  transform: 'translateX(-50%)'
+                }}
+              >
+                <div className="font-black text-[#0f172a] border-b border-[#f1f5f9] pb-1 flex items-center justify-between">
+                  <span>{activeDay.date}</span>
+                  <span className="text-[10px] text-[#64748b] font-semibold">24h Summary</span>
                 </div>
-                <div className="flex items-center justify-between gap-5 font-semibold text-gray-300">
-                  <span>Telegram Joins:</span>
-                  <span className="font-extrabold text-emerald-400">{days[hoveredIndex].joins}</span>
+                <div className="flex items-center justify-between gap-4 font-bold text-[#005bf8]">
+                  <span className="flex items-center gap-1.5">
+                    <span className="size-2 rounded-full bg-[#005bf8]"></span>
+                    Views:
+                  </span>
+                  <span>{activeDay.views}</span>
+                </div>
+                <div className="flex items-center justify-between gap-4 font-bold text-emerald-600">
+                  <span className="flex items-center gap-1.5">
+                    <span className="size-2 rounded-full bg-emerald-500"></span>
+                    Joins:
+                  </span>
+                  <span>{activeDay.joins}</span>
                 </div>
               </div>
             )}
