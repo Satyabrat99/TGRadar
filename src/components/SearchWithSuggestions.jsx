@@ -47,17 +47,20 @@ export default function SearchWithSuggestions({ searchVal, onSearchChange, commu
     const q = searchVal.toLowerCase().trim();
     return communities
       .filter(c =>
-        c.title?.toLowerCase().includes(q) ||
+        c.verified !== false &&
+        c.avatar &&
+        (c.title?.toLowerCase().includes(q) ||
         c.username?.toLowerCase().includes(q) ||
         c.category?.toLowerCase().includes(q) ||
-        c.tags?.some(t => t.toLowerCase().includes(q))
+        c.tags?.some(t => t.toLowerCase().includes(q)))
       )
       .slice(0, 6);
   }, [searchVal, communities]);
 
   const trendingSuggestions = useMemo(() => {
     if (searchVal.trim().length > 0) return [];
-    return [...communities]
+    return communities
+      .filter(c => c.verified !== false && c.avatar)
       .sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0))
       .slice(0, 5);
   }, [searchVal, communities]);

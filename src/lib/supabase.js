@@ -14,6 +14,8 @@ export async function fetchCommunities() {
     const { data, error } = await supabase
       .from('communities')
       .select('*')
+      .eq('verified', true)
+      .not('avatar', 'is', null)
       .order('subscribers', { ascending: false });
 
     if (error || !data || data.length === 0) {

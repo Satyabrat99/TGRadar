@@ -1,4 +1,4 @@
-import { getTelegramAvatar, PREMIUM_GRADIENTS } from '../utils/telegramAvatar';
+import { getTelegramAvatar, PREMIUM_GRADIENTS } from '../utils/telegramAvatar.js';
 
 export const COMMUNITIES = [
   // --- Domain 1: News & World Affairs ---
