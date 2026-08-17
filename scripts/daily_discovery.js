@@ -66,21 +66,19 @@ function parseSubscribers(extraText) {
 }
 
 /**
- * Live Telegram Public Verification Gate
+ * // ── Live Telegram Public Handle Verifier ─────────────────────
  */
 async function verifyTelegramHandle(username) {
-  const clean = username.replace('@', '').trim().toLowerCase();
-  const url = `https://t.me/${clean}`;
-
   try {
+    const url = `https://t.me/${username}`;
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9'
       }
     });
 
-    if (!res.ok) return { valid: false };
-
+    if (!res.ok) return null;
     const html = await res.text();
 
     const titleMatch = html.match(/<meta property="og:title" content="([^"]+)"/);
