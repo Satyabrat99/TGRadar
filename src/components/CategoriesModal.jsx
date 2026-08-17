@@ -1,7 +1,38 @@
 import React, { useState, useMemo } from 'react';
-import { X, Search, ChevronRight, Hash, Sparkles, Layers, ArrowLeft, ExternalLink, Filter, Radio, MessageSquare, AppWindow } from 'lucide-react';
+import { X, Search, ChevronRight, Sparkles, Layers, Filter, Radio, MessageSquare, AppWindow } from 'lucide-react';
 import { CATEGORY_HIERARCHY } from '../data/categoryHierarchy';
 import CommunityCard from './CommunityCard';
+
+// Helper: Check if community matches domain
+function communityMatchesDomain(c, domain) {
+  if (!c || !c.category) return false;
+  const cCat = c.category.toLowerCase();
+  const dName = domain.name.toLowerCase();
+  const domainTokens = dName.split(/[\s&,/]+/);
+  return domainTokens.some(token => token.length > 2 && cCat.includes(token));
+}
+
+// Helper: Check if community matches subcategory based on tags & name keywords
+function communityMatchesSubCategory(c, sub) {
+  if (!c) return false;
+  const subTags = sub.tags || [];
+  const cTags = (c.tags || []).map(t => String(t).toLowerCase());
+  const cTitle = (c.title || '').toLowerCase();
+  const cDesc = (c.description || '').toLowerCase();
+  const subName = sub.name.toLowerCase();
+
+  // 1. Tag overlap & keyword match
+  const tagMatch = subTags.some(tag => {
+    const t = tag.toLowerCase();
+    return cTags.some(ct => ct.includes(t) || t.includes(ct)) || cTitle.includes(t) || cDesc.includes(t);
+  });
+
+  // 2. Subcategory name word match
+  const subWords = subName.split(/[\s&,/]+/).filter(w => w.length > 3 && !['channels','hubs','groups','and'].includes(w));
+  const wordMatch = subWords.some(w => cTitle.includes(w) || cDesc.includes(w) || cTags.some(ct => ct.includes(w)));
+
+  return tagMatch || wordMatch;
+}
 
 export default function CategoriesModal({ 
   isOpen, 
@@ -13,8 +44,7 @@ export default function CategoriesModal({
   onUpvote,
   onOpenPreview,
   onSelectCategory,
-  onSelectSubCategory,
-  onSelectTag
+  onSelectSubCategory
 }) {
   const [selectedDomainId, setSelectedDomainId] = useState(CATEGORY_HIERARCHY[0].id);
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,48 +55,38 @@ export default function CategoriesModal({
     return CATEGORY_HIERARCHY.find(cat => cat.id === selectedDomainId) || CATEGORY_HIERARCHY[0];
   }, [selectedDomainId]);
 
-  // Real Dynamic Community Counts per Domain
+  // Dynamic Real Community Counts per Domain
   const domainCountsMap = useMemo(() => {
     const map = {};
     CATEGORY_HIERARCHY.forEach(domain => {
-      const domainKey = domain.name.toLowerCase().split(' ')[0];
-      const count = communities.filter(c => c.category?.toLowerCase().includes(domainKey)).length;
+      const count = communities.filter(c => communityMatchesDomain(c, domain)).length;
       map[domain.id] = count;
     });
     return map;
   }, [communities]);
 
-  // Real Dynamic Community Counts per Subcategory
+  // Dynamic Real Community Counts per Subcategory
   const subCategoryCountsMap = useMemo(() => {
     const map = {};
     CATEGORY_HIERARCHY.forEach(domain => {
+      const domainComms = communities.filter(c => communityMatchesDomain(c, domain));
       domain.subCategories.forEach(sub => {
-        const subKey = sub.name.toLowerCase().split(' ')[0];
-        const count = communities.filter(c => {
-          const matchesDomain = c.category?.toLowerCase().includes(domain.name.toLowerCase().split(' ')[0]);
-          const matchesSub = c.title?.toLowerCase().includes(subKey) || 
-                             c.description?.toLowerCase().includes(subKey) ||
-                             c.tags?.some(t => t.toLowerCase().includes(subKey));
-          return matchesDomain || matchesSub;
-        }).length;
+        const count = domainComms.filter(c => communityMatchesSubCategory(c, sub)).length;
         map[sub.id] = count;
       });
     });
     return map;
   }, [communities]);
 
-  // Matching community cards for selected Domain + Subcategory + Type
+  // Matching community cards for selected Domain + Active Subcategory + Type Filter
   const domainCommunities = useMemo(() => {
-    const domainKey = selectedDomain.name.toLowerCase().split(' ')[0];
-    let list = communities.filter(c => c.category?.toLowerCase().includes(domainKey));
+    let list = communities.filter(c => communityMatchesDomain(c, selectedDomain));
 
     if (activeSubCategory) {
-      const subKey = activeSubCategory.toLowerCase().split(' ')[0];
-      list = list.filter(c => 
-        c.title?.toLowerCase().includes(subKey) || 
-        c.description?.toLowerCase().includes(subKey) ||
-        c.tags?.some(t => t.toLowerCase().includes(subKey))
-      );
+      const subObj = selectedDomain.subCategories.find(s => s.name === activeSubCategory);
+      if (subObj) {
+        list = list.filter(c => communityMatchesSubCategory(c, subObj));
+      }
     }
 
     if (selectedType) {
@@ -76,7 +96,7 @@ export default function CategoriesModal({
     return list;
   }, [communities, selectedDomain, activeSubCategory, selectedType]);
 
-  // Filter sub-categories based on instant search
+  // Search filter across hierarchy
   const filteredHierarchy = useMemo(() => {
     if (!searchQuery.trim()) return null;
     const q = searchQuery.toLowerCase().trim();
@@ -124,11 +144,11 @@ export default function CategoriesModal({
                   Verified Directory
                 </span>
               </div>
-              <p className="text-xs text-[#787878] mt-0.5">Explore real verified communities across 10 Parent Domains</p>
+              <p className="text-xs text-[#787878] mt-0.5">Explore real verified communities across {CATEGORY_HIERARCHY.length} Parent Domains</p>
             </div>
           </div>
 
-          {/* Search Input Bar */}
+          {/* Search Bar */}
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <div className="relative w-full sm:w-[320px]">
               <Search className="size-4 text-[#787878] absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -152,7 +172,7 @@ export default function CategoriesModal({
               )}
             </div>
 
-            {/* Close Modal Button */}
+            {/* Close Button */}
             <button 
               onClick={onClose}
               className="size-9 rounded-full bg-gray-100 hover:bg-gray-200 text-[#1b2045] flex items-center justify-center transition-colors flex-shrink-0 cursor-pointer"
@@ -213,7 +233,7 @@ export default function CategoriesModal({
               )}
             </div>
           ) : (
-            /* Master-Detail Split Mode */
+            /* Master-Detail Explorer */
             <>
               {/* Left Sidebar: 10 Parent Domains with REAL Dynamic Counts */}
               <div className="w-full sm:w-[320px] bg-[#f8fafc] border-r border-[#e9e9e9] p-4 overflow-y-auto flex flex-col gap-1.5 flex-shrink-0">
@@ -260,10 +280,10 @@ export default function CategoriesModal({
                 })}
               </div>
 
-              {/* Right Panel: DIRECT COMMUNITY CARDS GRID with Structured Filters */}
+              {/* Right Panel: REAL COMMUNITY CARDS GRID with Real Subcategory Counts */}
               <div className="flex-1 p-6 overflow-y-auto bg-white flex flex-col gap-5 text-left">
                 
-                {/* Header Bar with Category Details & Main Filter Action */}
+                {/* Header Bar */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#f0f0f0] pb-4 gap-3">
                   <div className="flex items-center gap-3">
                     <div className={`size-10 rounded-2xl bg-gradient-to-br ${selectedDomain.gradient} text-white flex items-center justify-center shadow-md flex-shrink-0`}>
@@ -289,10 +309,10 @@ export default function CategoriesModal({
                   </button>
                 </div>
 
-                {/* Structured Subcategories & Type Filter Pills Bar */}
+                {/* Subcategory & Format Filter Pills */}
                 <div className="flex flex-col gap-2.5 bg-[#f8fafc] p-3 rounded-2xl border border-[#e9e9e9]">
                   
-                  {/* Clean Pill Subcategory Filters without Scrollbars */}
+                  {/* Subcategory Pills Row */}
                   <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
                     <button
                       onClick={() => setActiveSubCategory(null)}
@@ -329,7 +349,7 @@ export default function CategoriesModal({
                     })}
                   </div>
 
-                  {/* Format Pills Row (Channels / Groups / Mini Apps) */}
+                  {/* Format Pills Row */}
                   <div className="flex items-center gap-1.5 border-t border-[#e2e8f5] pt-2 overflow-x-auto no-scrollbar">
                     <span className="text-[10px] font-extrabold uppercase text-[#787878] tracking-wider mr-1">Format:</span>
                     {[
@@ -375,11 +395,11 @@ export default function CategoriesModal({
                 ) : (
                   <div className="py-16 flex flex-col items-center justify-center text-center text-[#787878]">
                     <Sparkles className="size-8 text-[#005bf8] mb-2" />
-                    <p className="text-sm font-bold text-[#1b2045]">No verified communities match your active filters</p>
-                    <p className="text-xs mt-1">Try resetting the sub-category or format filter to view more communities.</p>
+                    <p className="text-sm font-bold text-[#1b2045]">No verified communities indexed for this sub-topic yet</p>
+                    <p className="text-xs mt-1">Select another sub-category or click "Filter Main Discovery Page" to explore related categories.</p>
                     <button
                       onClick={() => { setActiveSubCategory(null); setSelectedType(null); }}
-                      className="mt-3 text-xs font-extrabold text-[#005bf8] hover:underline"
+                      className="mt-3 text-xs font-extrabold text-[#005bf8] hover:underline cursor-pointer"
                     >
                       Reset Filters
                     </button>
